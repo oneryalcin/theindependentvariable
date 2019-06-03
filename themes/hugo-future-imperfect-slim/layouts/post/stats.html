@@ -4,10 +4,10 @@
     {{ if gt $categoriesLen 0 }}
       <li class="categories">
         <ul>
-          {{ range $k, $v := .Params.categories }}
+<!--           {{ range $k, $v := .Params.categories }}
             {{ $url := printf "categories/%s" (. | urlize | lower) }}
             <li><a class="article-category-link" href="{{ $url | absLangURL }}">{{ . }}</a></li>
-          {{ end }}
+          {{ end }} -->
         </ul>
       </li>
     {{ end }}
