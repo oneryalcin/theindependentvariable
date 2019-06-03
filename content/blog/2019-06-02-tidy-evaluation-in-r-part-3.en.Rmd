@@ -1,0 +1,64 @@
+---
+title: Tidy Evaluation in R (Part 3)
+author: Mehmet Oner Yalcin
+date: '2019-06-02'
+slug: tidy-eval-r-part3
+categories:
+  - R
+tags:
+  - rlang
+  - tidyeval
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+If you have some experience wriitng R functions, there is possibility you may have hit a problem called unintended data masking. This can introduce subtle but hard to find bugs. We'll have a look at it in this post as well as advanced use of `!!` operator. Namely bypassing the data mask. 
+
+As always it's best understood via an example. Below `multiply_height` is a very simple function, taking a dataframe named `data`, and (assuming there is `height`) multiplying `height` by `amount` and transmuting.
+
+```{r warning=FALSE, message=FALSE}
+library(tidyverse)
+library(rlang)
+```
+
+```{r}
+multiply_height <- function(data, amount) {
+  transmute(data, height*amount)
+}
+
+multiply_height(starwars, 10)
+```
+
+
+if you are creating a fuction for the package you have no idea what's going to be in the `data` and `data` is used for data mask. Any columns in the data will be masking the objects used in the arguments in the `transmute` call. Let's shadow the `amount` argument by creating an `amount` column.
+
+
+```{r}
+starwars %>% 
+  mutate(amount = 0) %>% 
+  multiply_height(10)
+```
+
+
+As seen above `amount` column in the data has higher priority over thge argument `amount` in the `transmute` call. Therefore we introduced a bug to our function. 
+
+Unquote operator `!!` is useful at this point. Let's define our `multiply_height` function once again and unqoute `amount` argument
+
+```{r}
+multiply_height <- function(data, amount) {
+  transmute(data, height * !!amount)
+}
+
+starwars %>% 
+  mutate(amount = 0) %>% 
+  multiply_height(10)
+```
+
+Now `amount` column doesn't impact the `argument` inside our function, our subtle but annoying bug is resolved. 
+
+Hope you found it useful!
+

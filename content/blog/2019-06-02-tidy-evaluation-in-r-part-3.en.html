@@ -1,0 +1,86 @@
+---
+title: Tidy Evaluation in R (Part 3)
+author: Mehmet Oner Yalcin
+date: '2019-06-02'
+slug: tidy-eval-r-part3
+categories:
+  - R
+tags:
+  - rlang
+  - tidyeval
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+
+
+<p>If you have some experience wriitng R functions, there is possibility you may have hit a problem called unintended data masking. This can introduce subtle but hard to find bugs. We’ll have a look at it in this post as well as advanced use of <code>!!</code> operator. Namely bypassing the data mask.</p>
+<p>As always it’s best understood via an example. Below <code>multiply_height</code> is a very simple function, taking a dataframe named <code>data</code>, and (assuming there is <code>height</code>) multiplying <code>height</code> by <code>amount</code> and transmuting.</p>
+<pre class="r"><code>library(tidyverse)
+library(rlang)</code></pre>
+<pre class="r"><code>multiply_height &lt;- function(data, amount) {
+  transmute(data, height*amount)
+}
+
+multiply_height(starwars, 10)</code></pre>
+<pre><code>## # A tibble: 87 x 1
+##    `height * amount`
+##                &lt;dbl&gt;
+##  1              1720
+##  2              1670
+##  3               960
+##  4              2020
+##  5              1500
+##  6              1780
+##  7              1650
+##  8               970
+##  9              1830
+## 10              1820
+## # … with 77 more rows</code></pre>
+<p>if you are creating a fuction for the package you have no idea what’s going to be in the <code>data</code> and <code>data</code> is used for data mask. Any columns in the data will be masking the objects used in the arguments in the <code>transmute</code> call. Let’s shadow the <code>amount</code> argument by creating an <code>amount</code> column.</p>
+<pre class="r"><code>starwars %&gt;% 
+  mutate(amount = 0) %&gt;% 
+  multiply_height(10)</code></pre>
+<pre><code>## # A tibble: 87 x 1
+##    `height * amount`
+##                &lt;dbl&gt;
+##  1                 0
+##  2                 0
+##  3                 0
+##  4                 0
+##  5                 0
+##  6                 0
+##  7                 0
+##  8                 0
+##  9                 0
+## 10                 0
+## # … with 77 more rows</code></pre>
+<p>As seen above <code>amount</code> column in the data has higher priority over thge argument <code>amount</code> in the <code>transmute</code> call. Therefore we introduced a bug to our function.</p>
+<p>Unquote operator <code>!!</code> is useful at this point. Let’s define our <code>multiply_height</code> function once again and unqoute <code>amount</code> argument</p>
+<pre class="r"><code>multiply_height &lt;- function(data, amount) {
+  transmute(data, height * !!amount)
+}
+
+starwars %&gt;% 
+  mutate(amount = 0) %&gt;% 
+  multiply_height(10)</code></pre>
+<pre><code>## # A tibble: 87 x 1
+##    `height * 10`
+##            &lt;dbl&gt;
+##  1          1720
+##  2          1670
+##  3           960
+##  4          2020
+##  5          1500
+##  6          1780
+##  7          1650
+##  8           970
+##  9          1830
+## 10          1820
+## # … with 77 more rows</code></pre>
+<p>Now <code>amount</code> column doesn’t impact the <code>argument</code> inside our function, our subtle but annoying bug is resolved.</p>
+<p>Hope you found it useful!</p>

@@ -1,0 +1,259 @@
+---
+title: Tidy Evaluation in R (Part 2)
+author: Mehmet Oner Yalcin
+date: '2019-06-01'
+slug: tidy-eval-r-part2
+categories:
+  - R
+tags:
+  - tidyeval
+  - rlang
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+In this post we'll continue where we left off in [part 1](http://example.com). 
+
+We had a `summarize_avg` function that takes a data frame and a column name as string and finds the average of that column. However we don't want to input column name as string, but as object as we experience in all tidyverse functions. Let's remember what we had before 
+
+```{r echo=FALSE, warning=FALSE, message=FALSE}
+
+library(tidyverse)
+library(rlang)
+
+summarize_avg <- function(data, col) {
+  col <- rlang::sym(col)
+  data %>%
+    summarise(avg = mean(!!col, na.rm = TRUE))
+}
+```
+
+```{r} 
+starwars %>%  
+  group_by(species) %>% 
+  summarize_avg('height') %>% 
+  head(3)
+```
+
+Example above works but, when we input `height` as object rather than string it fails,
+
+```{r error=TRUE}
+starwars %>%  
+  group_by(species) %>% 
+  summarize_avg(height) %>% 
+  head(3)
+```
+
+### Creating our own quoting function
+
+Solution to the input as object problem is rather an easy fix. We used `rlang::sym` function inside `summarize_avg` to create symbolic from string. All we need to do is to replace `rlang::sym` with `rlang::enquo` in order to use objects in our quoting function
+
+```{r}
+summarize_avg <- function(data, col) {
+  col <- rlang::enquo(col)
+  data %>%
+    summarise(avg = mean(!!col, na.rm = TRUE))
+}
+
+```
+
+This time our function should work with objects
+
+```{r}
+starwars %>%  
+  group_by(species) %>% 
+  summarize_avg(height) %>% 
+  head(3)
+
+```
+
+howevever we should note that `purrr:map` function no longer works with our quoted function
+
+```{r}
+cols  <- c("height", "mass")
+map(cols, summarize_avg, data = starwars)
+```
+
+quick fix to this problem is to convert `cols` character vector to symbols using `rlang::syms` function
+
+```{r}
+cols <- rlang::syms(cols)
+map(cols, summarize_avg, data = starwars)
+```
+
+
+One note here is that `enquo` function returns a quosure, not a quote. In the first part in one of the early examples we had `quote(height / mass)`. 
+
+```{r}
+# creates quote
+quote(height / mass)
+
+# creates quosure
+quo(height / mass)
+```
+
+difference between `enquo` and `quo` is that `enquo` works for arguments, so it can capture expressions supplied by the user. We use `enquo` in the functions mostly
+
+Quosures has two components, **expressions** and **environments**
+expression is similar to formulas in R where you use tilda to define formula like `~height/mass`, in expressions `^` is used.
+
+`env` defines the environment where quosure is living. Quosures are useful not to have bugs when you want to use quoted functions and stay clear from the bugs coming from namespaces (environments)
+
+Example below shows the environment changes when quosure created inside a function:
+
+```{r}
+mice <- c("Alice", "Bob", "Charlie")
+
+make_mouse <- function() {
+  mouse <- sample(mice, 1)
+  quo(mouse)
+}
+
+q1 <- make_mouse()
+q1
+
+q2 <- make_mouse()
+q2
+
+eval_tidy(q1)
+eval_tidy(q2)
+
+q3 <- quo(list(!!q1, !!q2))
+q3
+
+eval_tidy(q3)
+```
+
+
+for debugging quosures, use `rlang::quo_squash` to flatten the objects inside
+
+```{r}
+quo_squash(q3)
+```
+
+
+### Example: Partition a dataframe with select() inputs
+
+We'll write a function called `partition` that will create two data frames in a list partitioning the original dataframe to columns
+
+for example `partition(starwars, name:mass, films)` would return
+
+```{r echo=FALSE}
+list(
+  select(starwars, name:mass, films),
+  select(starwars, -(name:mass), -films)
+)
+
+```
+
+a quick solution for `partition` would be
+```
+list(
+  select(starwars, name:mass, films),
+  select(starwars, -(name:mass), -films)
+)
+```
+
+and thus the solution would be somthing like for the first partition (we'll replace `NULL` later with second partition) 
+
+```{r}
+partition <- function(data, ...) {
+  dots <- enquos(...)
+  list(
+    select(data, !!dots),
+    NULL
+  )
+}
+
+```
+
+however `select(data,!!dots)` gives error
+
+```{r error=TRUE}
+dots <- quos(name:mass, films)
+qq_show(select(starwars, !!dots))
+
+select(starwars, !!dots)
+```
+
+This is simply `select` doesn't know how to work with a list like `<S3: quosures>`.
+
+Therefore we have **splice-unquote** operator `!!!` to work with this. Let's now check qq_show with `!!!`
+
+```{r}
+qq_show(select(starwars, !!!dots))
+```
+
+Aha! now we have both quosures here. That's good. And now our `select` statement should evaluate 
+
+```{r}
+select(starwars, !!!dots)
+```
+
+Let's define the first part of `partition` function again with splice-unquote  operator
+
+```{r}
+partition <- function(data, ...) {
+  dots <- enquos(...)
+  list(
+    select(data, !!!dots),
+    NULL
+  )
+}
+
+partition(starwars, films, name:height)
+```
+
+
+for the second part of `partititon` function we need to negate `dots`. Before moving with solution let's look at how we modify the expression in a quosure. inside quosure context we can access and modify them 
+
+```{r error=TRUE}
+dots[[1]]
+
+# cannot modify without being in quosure context
+-dots[[1]]
+
+!!dots[[1]]
+```
+
+We need to use `quo` function to update our quosure `dots`
+
+```{r}
+quo(!!dots[[1]])
+
+quo(list(!!dots[[1]]))
+
+quo(-!!dots[[1]])
+
+# We can use quo_squash to inspect
+q <- quo(-!!dots[[1]])
+quo_squash(q)
+```
+
+For the second part of partition we need to negate each element in the list 
+
+```{r}
+map(dots, function(dot) quo(-!!dot))
+```
+
+This looks right, both expressions are negated. Let's update the second half of our `partition` function
+
+```{r}
+partition <- function(data, ...) {
+  dots <- enquos(...)
+  neg_dots <- map(dots, function(dot) quo(-!!dot))
+  
+  list(
+    select(data, !!!dots),
+    select(data, !!!neg_dots)
+  )
+}
+
+partition(starwars, films, name:height)
+```
+
+In the next post (part 3) will look at advanced use of unquote operator `!!`

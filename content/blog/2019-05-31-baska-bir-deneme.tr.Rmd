@@ -1,0 +1,21 @@
+---
+title: "baska bir deneme"
+author: "Oner Yalcin"
+date: '2019-05-31'
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+slug: baska-bir-deneme
+tags: []
+categories: Hugo
+type: post
+---
+
+
+Tukce kismi icin deneme 
+```{r}
+head(iris)
+```
+

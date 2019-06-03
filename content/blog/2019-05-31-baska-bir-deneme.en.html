@@ -1,0 +1,208 @@
+---
+title: Tidy Evaluation in R (Part 1)
+author: Mehmet Oner Yalcin
+date: '2019-05-31'
+slug: tidy-eval-r
+categories:
+  - R
+tags:
+  - R
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+
+
+<p>This post is pretty much a transcript of <a href="https://twitter.com/@_lionelhenry">Lionel Henry</a>’s <a href="https://resources.rstudio.com/webinars/tidyeval">webinar</a> on rstudio. Therefore I recommend you to <a href="https://resources.rstudio.com/webinars/tidyeval">watch it</a> if you prefer video rather than text.</p>
+<p><code>rlang</code> library provides a set of functions to do some magic, it’s best explained on examples:</p>
+<p>Dataset <code>starwars</code> has a two particular columns <code>height</code> and <code>mass</code></p>
+<pre class="r"><code>library(tidyverse)
+library(rlang)
+
+starwars %&gt;%  head()</code></pre>
+<pre><code>## # A tibble: 6 x 13
+##   name  height  mass hair_color skin_color eye_color birth_year gender
+##   &lt;chr&gt;  &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt; 
+## 1 Luke…    172    77 blond      fair       blue            19   male  
+## 2 C-3PO    167    75 &lt;NA&gt;       gold       yellow         112   &lt;NA&gt;  
+## 3 R2-D2     96    32 &lt;NA&gt;       white, bl… red             33   &lt;NA&gt;  
+## 4 Dart…    202   136 none       white      yellow          41.9 male  
+## 5 Leia…    150    49 brown      light      brown           19   female
+## 6 Owen…    178   120 brown, gr… light      blue            52   male  
+## # … with 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;, films &lt;list&gt;,
+## #   vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+<p>if we want to find body/mass ratio then we can use baseR function <code>quote</code> to create a kind of symbolic formula</p>
+<pre class="r"><code>sym_formula &lt;- quote(height/mass)
+sym_formula</code></pre>
+<pre><code>## height/mass</code></pre>
+<p>Note that above we didn’t input <code>height</code> or <code>mass</code> as strings.</p>
+<p>Using baseR function <code>eval</code> we can run the symbolic expression on <code>starwars</code> dataset</p>
+<pre class="r"><code>eval(sym_formula, starwars)</code></pre>
+<pre><code>##  [1] 2.233766 2.226667 3.000000 1.485294 3.061224 1.483333 2.200000
+##  [8] 3.031250 2.178571 2.363636 2.238095       NA 2.035714 2.250000
+## [15] 2.337838 0.128866 2.207792 1.636364 3.882353 2.266667 2.340153
+## [22] 1.428571 1.681416 2.240506 2.215190 2.168675       NA       NA
+## [29] 4.400000 2.352941 2.168539 2.122222       NA 2.969697 2.731707
+## [36]       NA       NA       NA 2.800000       NA       NA 2.187500
+## [43]       NA 3.236364 2.088889       NA 2.507692 2.238095 2.414634
+## [50] 2.252874       NA 3.680000       NA       NA 2.350000       NA
+## [57] 2.176471       NA       NA 2.287500 3.024911 3.320000       NA
+## [64] 2.412500       NA 2.316456 3.054545 1.941176 2.602273       NA
+## [71]       NA 5.266667       NA 4.020833       NA 3.122807 1.358491
+## [78] 1.720588 2.379747 3.708333 2.575000       NA       NA       NA
+## [85]       NA       NA 3.666667</code></pre>
+<p>Note that the expression above <code>eval(sym_formula, starwars)</code> equals to <code>starwars$height / starwars$mass</code></p>
+<p>Let’s define a function called <code>cement</code>, I won’t explain the particular details inside at the moment but it basically takes unquoted names and pastes them together with space:</p>
+<pre class="r"><code>cement &lt;- function(...) {
+  vars &lt;- rlang::ensyms(...)
+  vars &lt;- purrr::map(vars, as.character)
+  paste(vars, collapse = &quot; &quot;)
+}
+
+cement(Oner, Yalcin)</code></pre>
+<pre><code>## [1] &quot;Oner Yalcin&quot;</code></pre>
+<p>The issue is that <code>cement</code> treats all unqoted names as constants, for example I’ll add a new variable called <code>firstname</code></p>
+<pre class="r"><code>firstname &lt;- &quot;Mehmet&quot;
+
+cement(firstname, Oner, Yalcin)</code></pre>
+<pre><code>## [1] &quot;firstname Oner Yalcin&quot;</code></pre>
+<p>In order to get <code>Mehmet Oner Yalcin</code> and evaluate <code>firstname</code> as variable we need to use <code>!!</code>. This is called <strong>unquoting</strong></p>
+<pre class="r"><code>cement(!!firstname, Oner, Yalcin)</code></pre>
+<pre><code>## [1] &quot;Mehmet Oner Yalcin&quot;</code></pre>
+<p>Quasiquotation is the combination of quoting an expression while allowing immediate evaluation (unquoting) of part of that expression. To demystify this sentence we will show an example using <code>rlang::qq_show</code></p>
+<pre class="r"><code>firstname </code></pre>
+<pre><code>## [1] &quot;Mehmet&quot;</code></pre>
+<pre class="r"><code>qq_show(!!firstname)</code></pre>
+<pre><code>## &quot;Mehmet&quot;</code></pre>
+<p>above these two expressions are not equal, while <code>firstname</code> is a variable and holding string <code>Mehmet</code>, <code>qq_show</code> doesn’t return anything but has a side effect, prints out <code>Mehmet</code> to console</p>
+<pre class="r"><code>x &lt;- qq_show(!!firstname)</code></pre>
+<pre><code>## &quot;Mehmet&quot;</code></pre>
+<pre class="r"><code>print(x)</code></pre>
+<pre><code>## NULL</code></pre>
+<p>We can use <code>qq_show</code> to see the evaluated result of an quoted expression</p>
+<pre class="r"><code>qq_show(
+  cement(!!firstname, Oner, Yalcin)
+)</code></pre>
+<pre><code>## cement(&quot;Mehmet&quot;, Oner, Yalcin)</code></pre>
+<div id="first-example-working-with-column-names" class="section level3">
+<h3>First Example: Working with Column names</h3>
+<p><em>Goal: Compute average on different column names</em></p>
+<pre class="r"><code>starwars %&gt;% 
+  summarise(avg = mean(height, na.rm = TRUE))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1  174.</code></pre>
+<pre class="r"><code>cols &lt;- c(&quot;height&quot;, &quot;mass&quot;)</code></pre>
+<p><strong>Naive Attempt with <code>!!</code></strong></p>
+<pre class="r"><code>col &lt;- cols[[1]]
+
+starwars %&gt;% 
+  summarise(avg = mean(!!col, na.rm = TRUE))</code></pre>
+<pre><code>## Warning in mean.default(&quot;height&quot;, na.rm = TRUE): argument is not numeric or
+## logical: returning NA</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1    NA</code></pre>
+<p>Let’s see how <code>!!col</code> was evaluated</p>
+<pre class="r"><code>qq_show(
+  starwars %&gt;% 
+    summarise(avg = mean(!!col, na.rm = TRUE))
+)</code></pre>
+<pre><code>## starwars %&gt;% summarise(avg = mean(&quot;height&quot;, na.rm = TRUE))</code></pre>
+<p>as seen in the <code>qq_show</code> output above <code>!!col</code> argument evaluated as string <code>&quot;height&quot;</code>. This means we are trying to find the mean of string <code>&quot;height&quot;</code>, which is not defined as it is not numeric or logical</p>
+<p><strong>Creating Symbols</strong></p>
+<p>We’ll introduce another function called <code>rlang::sym</code>, this function take string as input and turn it into symbol.</p>
+<pre class="r"><code>sym(&quot;Mehmet&quot;)</code></pre>
+<pre><code>## Mehmet</code></pre>
+<p>Looks better, let’s try again</p>
+<pre class="r"><code>col &lt;- sym(cols[[1]])
+
+qq_show(
+  starwars %&gt;% 
+    summarise(avg = mean(!!col, na.rm = TRUE))
+)</code></pre>
+<pre><code>## starwars %&gt;% summarise(avg = mean(height, na.rm = TRUE))</code></pre>
+<p>yes, we are closer, at least now <code>height</code> is not a string. Let’s run it without <code>qq_show</code></p>
+<pre class="r"><code>starwars %&gt;% 
+  summarise(avg = mean(height, na.rm = TRUE))</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1  174.</code></pre>
+</div>
+<div id="using-in-a-loop" class="section level3">
+<h3>Using <code>!!</code> in a loop</h3>
+<pre class="r"><code>dfs &lt;- vector(&quot;list&quot;, length(cols))
+for (i in seq_along(cols)) {
+  col &lt;- rlang::sym(cols[[i]])
+  dfs[[i]] &lt;- starwars %&gt;% 
+    summarise(avg = mean(!!col, na.rm = TRUE))
+}
+
+dfs</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1  174.
+## 
+## [[2]]
+## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1  97.3</code></pre>
+<p>Ok it works but we don’t fancy <code>for</code> loops in a functional programming language like R. Let’s do it properly, using functions</p>
+<pre class="r"><code>summarize_avg &lt;- function(data, col) {
+  col &lt;- sym(col)
+  data %&gt;% 
+    summarise(avg = mean(!!col, na.rm = TRUE))
+}
+
+summarize_avg(starwars, &quot;height&quot;)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1  174.</code></pre>
+<p>now we can use <code>purrr::map</code></p>
+<pre class="r"><code>map(cols, summarize_avg, data = starwars)</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1  174.
+## 
+## [[2]]
+## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1  97.3</code></pre>
+<p>It works as expected, however it’s not the prettiest. The problem with <code>summarize_avg</code> is that it takes the column name as string not symbol, let’s say we use our function in an analysis pipeline like the example below:</p>
+<pre class="r"><code>starwars %&gt;% 
+  group_by(species) %&gt;% 
+  summarize_avg(&quot;height&quot;)</code></pre>
+<pre><code>## # A tibble: 38 x 2
+##    species     avg
+##    &lt;chr&gt;     &lt;dbl&gt;
+##  1 &lt;NA&gt;        160
+##  2 Aleena       79
+##  3 Besalisk    198
+##  4 Cerean      198
+##  5 Chagrian    196
+##  6 Clawdite    168
+##  7 Droid       140
+##  8 Dug         112
+##  9 Ewok         88
+## 10 Geonosian   183
+## # … with 28 more rows</code></pre>
+<p>It works but this is not coherent with dplyr interface, if we ommit the double quotes and feed <code>height</code> as an object then we get error</p>
+<pre class="r"><code>starwars %&gt;% 
+  group_by(species) %&gt;% 
+  summarize_avg(height)</code></pre>
+<pre><code>## Error in is_symbol(x): object &#39;height&#39; not found</code></pre>
+</div>

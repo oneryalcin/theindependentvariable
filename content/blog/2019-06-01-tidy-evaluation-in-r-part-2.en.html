@@ -1,0 +1,340 @@
+---
+title: Tidy Evaluation in R (Part 2)
+author: Mehmet Oner Yalcin
+date: '2019-06-01'
+slug: tidy-eval-r-part2
+categories:
+  - R
+tags:
+  - tidyeval
+  - rlang
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+
+
+<p>In this post we’ll continue where we left off in <a href="http://example.com">part 1</a>.</p>
+<p>We had a <code>summarize_avg</code> function that takes a data frame and a column name as string and finds the average of that column. However we don’t want to input column name as string, but as object as we experience in all tidyverse functions. Let’s remember what we had before</p>
+<pre class="r"><code>starwars %&gt;%  
+  group_by(species) %&gt;% 
+  summarize_avg(&#39;height&#39;) %&gt;% 
+  head(3)</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   species    avg
+##   &lt;chr&gt;    &lt;dbl&gt;
+## 1 &lt;NA&gt;       160
+## 2 Aleena      79
+## 3 Besalisk   198</code></pre>
+<p>Example above works but, when we input <code>height</code> as object rather than string it fails,</p>
+<pre class="r"><code>starwars %&gt;%  
+  group_by(species) %&gt;% 
+  summarize_avg(height) %&gt;% 
+  head(3)</code></pre>
+<pre><code>## Error in is_symbol(x): object &#39;height&#39; not found</code></pre>
+<div id="creating-our-own-quoting-function" class="section level3">
+<h3>Creating our own quoting function</h3>
+<p>Solution to the input as object problem is rather an easy fix. We used <code>rlang::sym</code> function inside <code>summarize_avg</code> to create symbolic from string. All we need to do is to replace <code>rlang::sym</code> with <code>rlang::enquo</code> in order to use objects in our quoting function</p>
+<pre class="r"><code>summarize_avg &lt;- function(data, col) {
+  col &lt;- rlang::enquo(col)
+  data %&gt;%
+    summarise(avg = mean(!!col, na.rm = TRUE))
+}</code></pre>
+<p>This time our function should work with objects</p>
+<pre class="r"><code>starwars %&gt;%  
+  group_by(species) %&gt;% 
+  summarize_avg(height) %&gt;% 
+  head(3)</code></pre>
+<pre><code>## # A tibble: 3 x 2
+##   species    avg
+##   &lt;chr&gt;    &lt;dbl&gt;
+## 1 &lt;NA&gt;       160
+## 2 Aleena      79
+## 3 Besalisk   198</code></pre>
+<p>howevever we should note that <code>purrr:map</code> function no longer works with our quoted function</p>
+<pre class="r"><code>cols  &lt;- c(&quot;height&quot;, &quot;mass&quot;)
+map(cols, summarize_avg, data = starwars)</code></pre>
+<pre><code>## Warning in mean.default(~&quot;height&quot;, na.rm = TRUE): argument is not numeric
+## or logical: returning NA</code></pre>
+<pre><code>## Warning in mean.default(~&quot;mass&quot;, na.rm = TRUE): argument is not numeric or
+## logical: returning NA</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1    NA
+## 
+## [[2]]
+## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1    NA</code></pre>
+<p>quick fix to this problem is to convert <code>cols</code> character vector to symbols using <code>rlang::syms</code> function</p>
+<pre class="r"><code>cols &lt;- rlang::syms(cols)
+map(cols, summarize_avg, data = starwars)</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1  174.
+## 
+## [[2]]
+## # A tibble: 1 x 1
+##     avg
+##   &lt;dbl&gt;
+## 1  97.3</code></pre>
+<p>One note here is that <code>enquo</code> function returns a quosure, not a quote. In the first part in one of the early examples we had <code>quote(height / mass)</code>.</p>
+<pre class="r"><code># creates quote
+quote(height / mass)</code></pre>
+<pre><code>## height/mass</code></pre>
+<pre class="r"><code># creates quosure
+quo(height / mass)</code></pre>
+<pre><code>## &lt;quosure&gt;
+## expr: ^height / mass
+## env:  global</code></pre>
+<p>difference between <code>enquo</code> and <code>quo</code> is that <code>enquo</code> works for arguments, so it can capture expressions supplied by the user. We use <code>enquo</code> in the functions mostly</p>
+<p>Quosures has two components, <strong>expressions</strong> and <strong>environments</strong>
+expression is similar to formulas in R where you use tilda to define formula like <code>~height/mass</code>, in expressions <code>^</code> is used.</p>
+<p><code>env</code> defines the environment where quosure is living. Quosures are useful not to have bugs when you want to use quoted functions and stay clear from the bugs coming from namespaces (environments)</p>
+<p>Example below shows the environment changes when quosure created inside a function:</p>
+<pre class="r"><code>mice &lt;- c(&quot;Alice&quot;, &quot;Bob&quot;, &quot;Charlie&quot;)
+
+make_mouse &lt;- function() {
+  mouse &lt;- sample(mice, 1)
+  quo(mouse)
+}
+
+q1 &lt;- make_mouse()
+q1</code></pre>
+<pre><code>## &lt;quosure&gt;
+## expr: ^mouse
+## env:  0x7fb2d2c59050</code></pre>
+<pre class="r"><code>q2 &lt;- make_mouse()
+q2</code></pre>
+<pre><code>## &lt;quosure&gt;
+## expr: ^mouse
+## env:  0x7fb2d06c3e00</code></pre>
+<pre class="r"><code>eval_tidy(q1)</code></pre>
+<pre><code>## [1] &quot;Charlie&quot;</code></pre>
+<pre class="r"><code>eval_tidy(q2)</code></pre>
+<pre><code>## [1] &quot;Alice&quot;</code></pre>
+<pre class="r"><code>q3 &lt;- quo(list(!!q1, !!q2))
+q3</code></pre>
+<pre><code>## &lt;quosure&gt;
+## expr: ^list(^mouse, ^mouse)
+## env:  global</code></pre>
+<pre class="r"><code>eval_tidy(q3)</code></pre>
+<pre><code>## [[1]]
+## [1] &quot;Charlie&quot;
+## 
+## [[2]]
+## [1] &quot;Alice&quot;</code></pre>
+<p>for debugging quosures, use <code>rlang::quo_squash</code> to flatten the objects inside</p>
+<pre class="r"><code>quo_squash(q3)</code></pre>
+<pre><code>## list(mouse, mouse)</code></pre>
+</div>
+<div id="example-partition-a-dataframe-with-select-inputs" class="section level3">
+<h3>Example: Partition a dataframe with select() inputs</h3>
+<p>We’ll write a function called <code>partition</code> that will create two data frames in a list partitioning the original dataframe to columns</p>
+<p>for example <code>partition(starwars, name:mass, films)</code> would return</p>
+<pre><code>## [[1]]
+## # A tibble: 87 x 4
+##    name               height  mass films    
+##    &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;list&gt;   
+##  1 Luke Skywalker        172    77 &lt;chr [5]&gt;
+##  2 C-3PO                 167    75 &lt;chr [6]&gt;
+##  3 R2-D2                  96    32 &lt;chr [7]&gt;
+##  4 Darth Vader           202   136 &lt;chr [4]&gt;
+##  5 Leia Organa           150    49 &lt;chr [5]&gt;
+##  6 Owen Lars             178   120 &lt;chr [3]&gt;
+##  7 Beru Whitesun lars    165    75 &lt;chr [3]&gt;
+##  8 R5-D4                  97    32 &lt;chr [1]&gt;
+##  9 Biggs Darklighter     183    84 &lt;chr [1]&gt;
+## 10 Obi-Wan Kenobi        182    77 &lt;chr [6]&gt;
+## # … with 77 more rows
+## 
+## [[2]]
+## # A tibble: 87 x 9
+##    hair_color skin_color eye_color birth_year gender homeworld species
+##    &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;     &lt;chr&gt;  
+##  1 blond      fair       blue            19   male   Tatooine  Human  
+##  2 &lt;NA&gt;       gold       yellow         112   &lt;NA&gt;   Tatooine  Droid  
+##  3 &lt;NA&gt;       white, bl… red             33   &lt;NA&gt;   Naboo     Droid  
+##  4 none       white      yellow          41.9 male   Tatooine  Human  
+##  5 brown      light      brown           19   female Alderaan  Human  
+##  6 brown, gr… light      blue            52   male   Tatooine  Human  
+##  7 brown      light      blue            47   female Tatooine  Human  
+##  8 &lt;NA&gt;       white, red red             NA   &lt;NA&gt;   Tatooine  Droid  
+##  9 black      light      brown           24   male   Tatooine  Human  
+## 10 auburn, w… fair       blue-gray       57   male   Stewjon   Human  
+## # … with 77 more rows, and 2 more variables: vehicles &lt;list&gt;,
+## #   starships &lt;list&gt;</code></pre>
+<p>a quick solution for <code>partition</code> would be</p>
+<pre><code>list(
+  select(starwars, name:mass, films),
+  select(starwars, -(name:mass), -films)
+)</code></pre>
+<p>and thus the solution would be somthing like for the first partition (we’ll replace <code>NULL</code> later with second partition)</p>
+<pre class="r"><code>partition &lt;- function(data, ...) {
+  dots &lt;- enquos(...)
+  list(
+    select(data, !!dots),
+    NULL
+  )
+}</code></pre>
+<p>however <code>select(data,!!dots)</code> gives error</p>
+<pre class="r"><code>dots &lt;- quos(name:mass, films)
+qq_show(select(starwars, !!dots))</code></pre>
+<pre><code>## select(starwars, &lt;S3: quosures&gt;)</code></pre>
+<pre class="r"><code>select(starwars, !!dots)</code></pre>
+<pre><code>## `structure(list(~name:mass, ~films), class = &quot;quosures&quot;, .Names = c(&quot;&quot;, 
+## &quot;&quot;))` must evaluate to column positions or names, not a list</code></pre>
+<p>This is simply <code>select</code> doesn’t know how to work with a list like <code>&lt;S3: quosures&gt;</code>.</p>
+<p>Therefore we have <strong>splice-unquote</strong> operator <code>!!!</code> to work with this. Let’s now check qq_show with <code>!!!</code></p>
+<pre class="r"><code>qq_show(select(starwars, !!!dots))</code></pre>
+<pre><code>## select(starwars, ^name:mass, ^films)</code></pre>
+<p>Aha! now we have both quosures here. That’s good. And now our <code>select</code> statement should evaluate</p>
+<pre class="r"><code>select(starwars, !!!dots)</code></pre>
+<pre><code>## # A tibble: 87 x 4
+##    name               height  mass films    
+##    &lt;chr&gt;               &lt;int&gt; &lt;dbl&gt; &lt;list&gt;   
+##  1 Luke Skywalker        172    77 &lt;chr [5]&gt;
+##  2 C-3PO                 167    75 &lt;chr [6]&gt;
+##  3 R2-D2                  96    32 &lt;chr [7]&gt;
+##  4 Darth Vader           202   136 &lt;chr [4]&gt;
+##  5 Leia Organa           150    49 &lt;chr [5]&gt;
+##  6 Owen Lars             178   120 &lt;chr [3]&gt;
+##  7 Beru Whitesun lars    165    75 &lt;chr [3]&gt;
+##  8 R5-D4                  97    32 &lt;chr [1]&gt;
+##  9 Biggs Darklighter     183    84 &lt;chr [1]&gt;
+## 10 Obi-Wan Kenobi        182    77 &lt;chr [6]&gt;
+## # … with 77 more rows</code></pre>
+<p>Let’s define the first part of <code>partition</code> function again with splice-unquote operator</p>
+<pre class="r"><code>partition &lt;- function(data, ...) {
+  dots &lt;- enquos(...)
+  list(
+    select(data, !!!dots),
+    NULL
+  )
+}
+
+partition(starwars, films, name:height)</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 87 x 3
+##    films     name               height
+##    &lt;list&gt;    &lt;chr&gt;               &lt;int&gt;
+##  1 &lt;chr [5]&gt; Luke Skywalker        172
+##  2 &lt;chr [6]&gt; C-3PO                 167
+##  3 &lt;chr [7]&gt; R2-D2                  96
+##  4 &lt;chr [4]&gt; Darth Vader           202
+##  5 &lt;chr [5]&gt; Leia Organa           150
+##  6 &lt;chr [3]&gt; Owen Lars             178
+##  7 &lt;chr [3]&gt; Beru Whitesun lars    165
+##  8 &lt;chr [1]&gt; R5-D4                  97
+##  9 &lt;chr [1]&gt; Biggs Darklighter     183
+## 10 &lt;chr [6]&gt; Obi-Wan Kenobi        182
+## # … with 77 more rows
+## 
+## [[2]]
+## NULL</code></pre>
+<p>for the second part of <code>partititon</code> function we need to negate <code>dots</code>. Before moving with solution let’s look at how we modify the expression in a quosure. inside quosure context we can access and modify them</p>
+<pre class="r"><code>dots[[1]]</code></pre>
+<pre><code>## &lt;quosure&gt;
+## expr: ^name:mass
+## env:  global</code></pre>
+<pre class="r"><code># cannot modify without being in quosure context
+-dots[[1]]</code></pre>
+<pre><code>## Base operators are not defined for quosures.
+## Do you need to unquote the quosure?
+## 
+##   # Bad:
+##   -myquosure
+## 
+##   # Good:
+##   -!!myquosure</code></pre>
+<pre class="r"><code>!!dots[[1]]</code></pre>
+<pre><code>## Quosures can only be unquoted within a quasiquotation context.
+## 
+##   # Bad:
+##   list(!!myquosure)
+## 
+##   # Good:
+##   dplyr::mutate(data, !!myquosure)</code></pre>
+<p>We need to use <code>quo</code> function to update our quosure <code>dots</code></p>
+<pre class="r"><code>quo(!!dots[[1]])</code></pre>
+<pre><code>## &lt;quosure&gt;
+## expr: ^name:mass
+## env:  global</code></pre>
+<pre class="r"><code>quo(list(!!dots[[1]]))</code></pre>
+<pre><code>## &lt;quosure&gt;
+## expr: ^list(^name:mass)
+## env:  global</code></pre>
+<pre class="r"><code>quo(-!!dots[[1]])</code></pre>
+<pre><code>## &lt;quosure&gt;
+## expr: ^-^name:mass
+## env:  global</code></pre>
+<pre class="r"><code># We can use quo_squash to inspect
+q &lt;- quo(-!!dots[[1]])
+quo_squash(q)</code></pre>
+<pre><code>## -(name:mass)</code></pre>
+<p>For the second part of partition we need to negate each element in the list</p>
+<pre class="r"><code>map(dots, function(dot) quo(-!!dot))</code></pre>
+<pre><code>## [[1]]
+## &lt;quosure&gt;
+## expr: ^-^name:mass
+## env:  0x7fb2cff3ff98
+## 
+## [[2]]
+## &lt;quosure&gt;
+## expr: ^-^films
+## env:  0x7fb2cff42d28</code></pre>
+<p>This looks right, both expressions are negated. Let’s update the second half of our <code>partition</code> function</p>
+<pre class="r"><code>partition &lt;- function(data, ...) {
+  dots &lt;- enquos(...)
+  neg_dots &lt;- map(dots, function(dot) quo(-!!dot))
+  
+  list(
+    select(data, !!!dots),
+    select(data, !!!neg_dots)
+  )
+}
+
+partition(starwars, films, name:height)</code></pre>
+<pre><code>## [[1]]
+## # A tibble: 87 x 3
+##    films     name               height
+##    &lt;list&gt;    &lt;chr&gt;               &lt;int&gt;
+##  1 &lt;chr [5]&gt; Luke Skywalker        172
+##  2 &lt;chr [6]&gt; C-3PO                 167
+##  3 &lt;chr [7]&gt; R2-D2                  96
+##  4 &lt;chr [4]&gt; Darth Vader           202
+##  5 &lt;chr [5]&gt; Leia Organa           150
+##  6 &lt;chr [3]&gt; Owen Lars             178
+##  7 &lt;chr [3]&gt; Beru Whitesun lars    165
+##  8 &lt;chr [1]&gt; R5-D4                  97
+##  9 &lt;chr [1]&gt; Biggs Darklighter     183
+## 10 &lt;chr [6]&gt; Obi-Wan Kenobi        182
+## # … with 77 more rows
+## 
+## [[2]]
+## # A tibble: 87 x 10
+##     mass hair_color skin_color eye_color birth_year gender homeworld
+##    &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      &lt;chr&gt;          &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;    
+##  1    77 blond      fair       blue            19   male   Tatooine 
+##  2    75 &lt;NA&gt;       gold       yellow         112   &lt;NA&gt;   Tatooine 
+##  3    32 &lt;NA&gt;       white, bl… red             33   &lt;NA&gt;   Naboo    
+##  4   136 none       white      yellow          41.9 male   Tatooine 
+##  5    49 brown      light      brown           19   female Alderaan 
+##  6   120 brown, gr… light      blue            52   male   Tatooine 
+##  7    75 brown      light      blue            47   female Tatooine 
+##  8    32 &lt;NA&gt;       white, red red             NA   &lt;NA&gt;   Tatooine 
+##  9    84 black      light      brown           24   male   Tatooine 
+## 10    77 auburn, w… fair       blue-gray       57   male   Stewjon  
+## # … with 77 more rows, and 3 more variables: species &lt;chr&gt;,
+## #   vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
+<p>In the next post (part 3) will look at advanced use of unquote operator <code>!!</code></p>
+</div>
