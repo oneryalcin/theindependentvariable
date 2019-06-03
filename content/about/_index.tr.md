@@ -3,7 +3,7 @@ date: "2019-04-09"
 title: Hakkımda
 ---
 
-2014 yılından bu yana Reading/İngiltere'de yaşıyorum ve Sky firmasında (Network) Veri Bilimcisi olarak çalışıyorum. Bu kişisel blogumda hem Türkçe hem de İngilizce paylaşımlarda bulunacağım.  
+2014 yılından bu yana Reading/İngiltere'de yaşıyorum ve Sky firmasında (Network) Veri Bilimcisi olarak çalışıyorum. Bu kişisel blogumda hem Türkçe hem de İngilizce paylaşımlarda bulunmaya çalışacağım. Veri 
 
 I'm a (Network) Data Scientist and a father of two from Reading/UK and working for Sky UK currently. I'm living in UK however I grew up un Turkey so I sometimes also post in Turkish as there is not much of data science content produced in Turkish. 
 
@@ -22,6 +22,6 @@ My background is Network Engineering. Therefore it's not a surprise that few of 
 ### Git Projects
 * [PyGoBGP -  Simple Python SDK for interacting with GoBGP](https://github.com/oneryalcin/PyGoBGP)
 
-
+ 
 
 *You can reach me via [Twitter](https://twitter.com/oneryalcin) or [Linkedin](https://uk.linkedin.com/in/oneryalcin)*
