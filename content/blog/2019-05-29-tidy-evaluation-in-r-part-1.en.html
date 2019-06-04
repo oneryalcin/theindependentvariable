@@ -13,8 +13,8 @@ type: post
 
 
 <p>This post is pretty much a transcript of <a href="https://twitter.com/@_lionelhenry">Lionel Henry</a>’s <a href="https://resources.rstudio.com/webinars/tidyeval">webinar</a> on rstudio. Therefore I recommend you to <a href="https://resources.rstudio.com/webinars/tidyeval">watch it</a> if you prefer video rather than text.</p>
-<p><code>rlang</code> library provides a set of functions to do some magic, it’s best explained on examples:</p>
-<p>Dataset <code>starwars</code> has a two particular columns <code>height</code> and <code>mass</code></p>
+<p><code>rlang</code> library provides a set of functions to do some magic, as in many cases in Data and Computer Scince it’s best explained with examples:</p>
+<p>Let’s load the <code>starwars</code> dataset. <code>starwars</code> dataset has a two particular columns <code>height</code> and <code>mass</code></p>
 <pre class="r"><code>library(tidyverse)
 library(rlang)
  
@@ -30,11 +30,11 @@ starwars %&gt;%  head()</code></pre>
 ## 6 Owen…    178   120 brown, gr… light      blue            52   male  
 ## # … with 5 more variables: homeworld &lt;chr&gt;, species &lt;chr&gt;, films &lt;list&gt;,
 ## #   vehicles &lt;list&gt;, starships &lt;list&gt;</code></pre>
-<p>if we want to find body/mass ratio then we can use baseR function <code>quote</code> to create a kind of symbolic formula</p>
+<p>imagine we were asked to find body/mass ratio for all star wars characters. We can use baseR function <code>quote</code> to create a kind of symbolic formula. (Matlab users may find it familiar)</p>
 <pre class="r"><code>sym_formula &lt;- quote(height/mass)
 sym_formula</code></pre>
 <pre><code>## height/mass</code></pre>
-<p>Note that above we didn’t input <code>height</code> or <code>mass</code> as strings.</p>
+<p>Please note that above we didn’t input <code>height</code> or <code>mass</code> as strings. These are called <strong>unquoted names</strong>. You may be familiar from tidyverse functions, as most of them takes unqoted names, rather than plain strings.</p>
 <p>Using baseR function <code>eval</code> we can run the symbolic expression on <code>starwars</code> dataset</p>
 <pre class="r"><code>eval(sym_formula, starwars)</code></pre>
 <pre><code>##  [1] 2.233766 2.226667 3.000000 1.485294 3.061224 1.483333 2.200000
@@ -51,7 +51,7 @@ sym_formula</code></pre>
 ## [78] 1.720588 2.379747 3.708333 2.575000       NA       NA       NA
 ## [85]       NA       NA 3.666667</code></pre>
 <p>Note that the expression above <code>eval(sym_formula, starwars)</code> equals to <code>starwars$height / starwars$mass</code></p>
-<p>Let’s define a function called <code>cement</code>, I won’t explain the particular details inside at the moment but it basically takes unquoted names and pastes them together with space:</p>
+<p>Let’s define a function called <code>cement</code>. I won’t explain the particular details inside at the moment but it basically takes unquoted names and pastes them together with space:</p>
 <pre class="r"><code>cement &lt;- function(...) {
   vars &lt;- rlang::ensyms(...)
   vars &lt;- purrr::map(vars, as.character)
@@ -60,20 +60,23 @@ sym_formula</code></pre>
 
 cement(Oner, Yalcin)</code></pre>
 <pre><code>## [1] &quot;Oner Yalcin&quot;</code></pre>
-<p>The issue is that <code>cement</code> treats all unqoted names as constants, for example I’ll add a new variable called <code>firstname</code></p>
+<p>The issue is that <code>cement</code> treats all unqoted names as constants. In order to explain what I meant by constant I’ll give an example. Below I’ll add a new variable called <code>firstname</code>, and use it in <code>cement</code> function</p>
 <pre class="r"><code>firstname &lt;- &quot;Mehmet&quot;
 
 cement(firstname, Oner, Yalcin)</code></pre>
 <pre><code>## [1] &quot;firstname Oner Yalcin&quot;</code></pre>
-<p>In order to get <code>Mehmet Oner Yalcin</code> and evaluate <code>firstname</code> as variable we need to use <code>!!</code>. This is called <strong>unquoting</strong></p>
+<p>As you see above, we don’t get “Mehmet” as firstname. This may seem a bit awkward.</p>
+<p>In order to get <code>Mehmet Oner Yalcin</code> and evaluate <code>firstname</code> as variable we need to use <code>!!</code>. This is called <strong>unquoting operator</strong></p>
 <pre class="r"><code>cement(!!firstname, Oner, Yalcin)</code></pre>
 <pre><code>## [1] &quot;Mehmet Oner Yalcin&quot;</code></pre>
+<div id="quasiquotation" class="section level3">
+<h3>Quasiquotation</h3>
 <p>Quasiquotation is the combination of quoting an expression while allowing immediate evaluation (unquoting) of part of that expression. To demystify this sentence we will show an example using <code>rlang::qq_show</code></p>
 <pre class="r"><code>firstname </code></pre>
 <pre><code>## [1] &quot;Mehmet&quot;</code></pre>
 <pre class="r"><code>qq_show(!!firstname)</code></pre>
 <pre><code>## &quot;Mehmet&quot;</code></pre>
-<p>above these two expressions are not equal, while <code>firstname</code> is a variable and holding string <code>Mehmet</code>, <code>qq_show</code> doesn’t return anything but has a side effect, prints out <code>Mehmet</code> to console</p>
+<p>in the example above, two expressions are not equal. While <code>firstname</code> is a variable and holds a string <code>Mehmet</code>, <code>qq_show</code> doesn’t return anything but has a side effect, prints out <code>Mehmet</code> to console</p>
 <pre class="r"><code>x &lt;- qq_show(!!firstname)</code></pre>
 <pre><code>## &quot;Mehmet&quot;</code></pre>
 <pre class="r"><code>print(x)</code></pre>
@@ -83,6 +86,7 @@ cement(firstname, Oner, Yalcin)</code></pre>
   cement(!!firstname, Oner, Yalcin)
 )</code></pre>
 <pre><code>## cement(&quot;Mehmet&quot;, Oner, Yalcin)</code></pre>
+</div>
 <div id="first-example-working-with-column-names" class="section level3">
 <h3>First Example: Working with Column names</h3>
 <p><em>Goal: Compute average on different column names</em></p>
@@ -200,4 +204,5 @@ summarize_avg(starwars, &quot;height&quot;)</code></pre>
   group_by(species) %&gt;% 
   summarize_avg(height)</code></pre>
 <pre><code>## Error in is_symbol(x): object &#39;height&#39; not found</code></pre>
+<p>We’ll continue in the next post <a href="https://www.theindependentvariable.co.uk/blog/tidy-eval-r-part2/">part 2</a> to explore more about tidy evaluation in R.</p>
 </div>

@@ -1,27 +1,22 @@
 ---
 date: "2019-04-09"
-title: Hakkımda
+title: Bu blogun hakkinda?
 ---
 
-2014 yılından bu yana Reading/İngiltere'de yaşıyorum ve Sky firmasında (Network) Veri Bilimcisi olarak çalışıyorum. Bu kişisel blogumda hem Türkçe hem de İngilizce paylaşımlarda bulunmaya çalışacağım. Veri 
+Veri Bilimi (Data Science) hakkinda ciddi anlamda kaliteli ingilizce kaynak bulmak mumkun, ancak benum tecrubeme gore bu konuda calismak isteyenler icin Turkce kaynak maalesef cok fazla yok. Bu Veri Bilimi blogunu hem Turkce hem de Ingilizce olarak yayinlamak istedim, boylelikle hem gorece az sayida olan Turkce Veri Bilimine kucuk de olsa bir katkida bulunma firsatim olmus olacak, hem de ingilizce ile de tum diger kalan insanlarla yazdiklarimi paylasma imkanim olacak.  
 
-I'm a (Network) Data Scientist and a father of two from Reading/UK and working for Sky UK currently. I'm living in UK however I grew up un Turkey so I sometimes also post in Turkish as there is not much of data science content produced in Turkish. 
+Kisaca kendimden ve su an yaptiklarimdan bahsetmem gerekirse; 2014 yılından Bilkent Universitesi Elektrik Elektronikten mezun olduktan sonra Nokia'da (Alcatel-Lucent) farkli projelerde 5 sene calistiktan sonra, 2014 yilinda Ingiltereye yerlestim. O tarihten bu yana da Reading/İngiltere'de yaşıyorum ve Sky firmasında (Network) Veri Bilimcisi olarak çalışıyorum. Sky'in yaklasik 6 milyon interent kullanicilari icin omurga networku en optimize decek sekilde planlamaya, ve yapay ogrenme metodlari ile de olasi problemleri oncesinde tahmin edip kullanicilar sorun yasamadan duzeltmeye yonelik calismalarla vaktimin onemli bir kismini harciyorum.  
+Ingiltere iletisim duzenleyicisi kurulus olan [Ofcom raporuna gore de kullanicilarin en az sikayet yasadiklari internet servis saglayicisi](https://www.ofcom.org.uk/about-ofcom/latest/features-and-news/best-worst-telecoms-providers) uzun bir suredir Sky. Bunu bir adim oteye goturmeye calisiyoruz.  
 
-There are thousands of Data Science blogs and this one is not very different; I'd like to share few of my experiences, technical tips, few interesting stories that you may find useful or fun at some point. I read other people's blog a lot and learned also a lot from them. This is a small give back to the community. 
+Yogunlukla R, Python ve SQL kullaniyorum, bu yuzden de firsat buldukca burada paylasimlarda bulunacagim. Bazi paylasimlar Network odakli olabilir (Network Muhendisligi gecmisimden dolayi) ama cogunlukla genel Veri bilimi, temel olasilik problemleri, istastistik, ve bazi yazilim muhendisligi ile ilgili konulari paylasmaya ozen gosterecegim. 
 
-Even though I identify myself as Data Scientist,  I do also considerable amount of full-stack web dev, and DevOps, to create analytics pipelines. 
+Eger sorulariniz olursa ya da herhangi bir konu hakkinda iletisime gecmek isterseniz, [Twitter](https://twitter.com/oneryalcin) ya da [Linkedin'den](https://uk.linkedin.com/in/oneryalcin)'den bana ulasabilirsiniz. 
 
-I very much enjoy probability theory, so I'm planning to post many probabilty and stats related posts, mostly using computational approach.
+### Konusma ve Konferanslar 
 
-My background is Network Engineering. Therefore it's not a surprise that few of my posts focus on details of Network engineering, internet measurements etc...
+* [(Ingilizce) Project Hubble, Internet Measurement - Talk at British Computer Society Advanced Programming Group](https://www.youtube.com/watch?v=XzyM87Lv8wk)
 
-### Talks
-
-* [Project Hubble, Internet Measurement - Talk at British Computer Society Advanced Programming Group](https://www.youtube.com/watch?v=XzyM87Lv8wk)
-
-### Git Projects
+### Git Projeleri
 * [PyGoBGP -  Simple Python SDK for interacting with GoBGP](https://github.com/oneryalcin/PyGoBGP)
 
  
-
-*You can reach me via [Twitter](https://twitter.com/oneryalcin) or [Linkedin](https://uk.linkedin.com/in/oneryalcin)*

@@ -18,7 +18,7 @@ type: post
 
 
 
-<p>In this post we’ll continue where we left off in <a href="http://example.com">part 1</a>.</p>
+<p>In this post we’ll continue where we left off in <a href="https://www.theindependentvariable.co.uk/blog/tidy-eval-r/">part 1</a>.</p>
 <p>We had a <code>summarize_avg</code> function that takes a data frame and a column name as string and finds the average of that column. However we don’t want to input column name as string, but as object as we experience in all tidyverse functions. Let’s remember what we had before</p>
 <pre class="r"><code>starwars %&gt;%  
   group_by(species) %&gt;% 
@@ -112,16 +112,16 @@ q1 &lt;- make_mouse()
 q1</code></pre>
 <pre><code>## &lt;quosure&gt;
 ## expr: ^mouse
-## env:  0x7fb2d2c59050</code></pre>
+## env:  0x7f8a0b65cbe0</code></pre>
 <pre class="r"><code>q2 &lt;- make_mouse()
 q2</code></pre>
 <pre><code>## &lt;quosure&gt;
 ## expr: ^mouse
-## env:  0x7fb2d06c3e00</code></pre>
+## env:  0x7f8a0f90b438</code></pre>
 <pre class="r"><code>eval_tidy(q1)</code></pre>
 <pre><code>## [1] &quot;Charlie&quot;</code></pre>
 <pre class="r"><code>eval_tidy(q2)</code></pre>
-<pre><code>## [1] &quot;Alice&quot;</code></pre>
+<pre><code>## [1] &quot;Bob&quot;</code></pre>
 <pre class="r"><code>q3 &lt;- quo(list(!!q1, !!q2))
 q3</code></pre>
 <pre><code>## &lt;quosure&gt;
@@ -132,7 +132,7 @@ q3</code></pre>
 ## [1] &quot;Charlie&quot;
 ## 
 ## [[2]]
-## [1] &quot;Alice&quot;</code></pre>
+## [1] &quot;Bob&quot;</code></pre>
 <p>for debugging quosures, use <code>rlang::quo_squash</code> to flatten the objects inside</p>
 <pre class="r"><code>quo_squash(q3)</code></pre>
 <pre><code>## list(mouse, mouse)</code></pre>
@@ -286,12 +286,12 @@ quo_squash(q)</code></pre>
 <pre><code>## [[1]]
 ## &lt;quosure&gt;
 ## expr: ^-^name:mass
-## env:  0x7fb2cff3ff98
+## env:  0x7f8a0af4cc78
 ## 
 ## [[2]]
 ## &lt;quosure&gt;
 ## expr: ^-^films
-## env:  0x7fb2cff42d28</code></pre>
+## env:  0x7f8a0af4f9d0</code></pre>
 <p>This looks right, both expressions are negated. Let’s update the second half of our <code>partition</code> function</p>
 <pre class="r"><code>partition &lt;- function(data, ...) {
   dots &lt;- enquos(...)

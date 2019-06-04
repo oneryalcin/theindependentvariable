@@ -12,9 +12,9 @@ type: post
 
 This post is pretty much a transcript of [Lionel Henry](https://twitter.com/@_lionelhenry)'s [webinar](https://resources.rstudio.com/webinars/tidyeval) on rstudio. Therefore I recommend you to [watch it](https://resources.rstudio.com/webinars/tidyeval) if you prefer video rather than text. 
 
-`rlang` library provides a set of functions to do some magic, it's best explained on examples:
+`rlang` library provides a set of functions to do some magic, as in many cases in Data and Computer Scince it's best explained with examples:
 
-Dataset `starwars` has a two particular columns `height` and `mass`
+Let's load the `starwars` dataset. `starwars` dataset has a two particular columns `height` and `mass`
 
 ```{r warning=FALSE, message=FALSE}
 library(tidyverse)
@@ -23,13 +23,14 @@ library(rlang)
 starwars %>%  head()
 ```
 
-if we want to find body/mass ratio then we can use baseR function `quote` to create a kind of symbolic formula 
+imagine we were asked to find body/mass ratio for all star wars characters. We can use baseR function `quote` to create a kind of symbolic formula. (Matlab users may find it familiar) 
 
 ```{r}
 sym_formula <- quote(height/mass)
 sym_formula
 ```
-Note that above we didn't input `height` or `mass` as strings. 
+Please note that above we didn't input `height` or `mass` as strings. These are called **unquoted names**. You may be familiar from tidyverse functions, as most of them takes unqoted names, rather than plain strings. 
+
 
 Using baseR function `eval` we can run the symbolic expression on `starwars` dataset 
 
@@ -39,7 +40,7 @@ eval(sym_formula, starwars)
 
 Note that the expression above `eval(sym_formula, starwars)` equals to `starwars$height / starwars$mass`
 
-Let's define a function called `cement`, I won't explain the particular details inside at the moment but it basically takes unquoted names and pastes them together with space:
+Let's define a function called `cement`. I won't explain the particular details inside at the moment but it basically takes unquoted names and pastes them together with space:
 
 ```{r}
 cement <- function(...) {
@@ -51,7 +52,7 @@ cement <- function(...) {
 cement(Oner, Yalcin)
 ```
 
-The issue is that `cement` treats all unqoted names as constants, for example I'll add a new variable called `firstname`
+The issue is that `cement` treats all unqoted names as constants. In order to explain what I meant by constant I'll give an example. Below I'll add a new variable called `firstname`, and use it in `cement` function
 
 ```{r}
 firstname <- "Mehmet"
@@ -59,11 +60,15 @@ firstname <- "Mehmet"
 cement(firstname, Oner, Yalcin)
 ```
 
-In order to get `Mehmet Oner Yalcin` and evaluate `firstname` as variable we need to use `!!`. This is called **unquoting**
+As you see above, we don't get "Mehmet" as firstname. This may seem a bit awkward.
+
+In order to get `Mehmet Oner Yalcin` and evaluate `firstname` as variable we need to use `!!`. This is called **unquoting operator**
 
 ```{r}
 cement(!!firstname, Oner, Yalcin)
 ```
+
+### Quasiquotation
 
 Quasiquotation is the combination of quoting an expression while allowing immediate evaluation (unquoting) of part of that expression. To demystify this sentence we will show an example using `rlang::qq_show` 
 
@@ -73,7 +78,7 @@ firstname
 qq_show(!!firstname)
 ```
 
-above these two expressions are not equal, while `firstname` is a variable and holding string `Mehmet`, `qq_show` doesn't return anything but has a side effect, prints out `Mehmet` to console
+in the example above, two expressions are not equal. While `firstname` is a variable and holds a string `Mehmet`, `qq_show` doesn't return anything but has a side effect, prints out `Mehmet` to console
 
 ```{r}
 x <- qq_show(!!firstname)
@@ -198,3 +203,5 @@ starwars %>%
   group_by(species) %>% 
   summarize_avg(height)
 ```
+
+We'll continue in the next post [part 2](https://www.theindependentvariable.co.uk/blog/tidy-eval-r-part2/) to explore more about tidy evaluation in R. 

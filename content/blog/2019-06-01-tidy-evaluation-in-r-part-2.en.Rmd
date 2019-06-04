@@ -16,7 +16,7 @@ linktitle: ''
 type: post
 ---
 
-In this post we'll continue where we left off in [part 1](http://example.com). 
+In this post we'll continue where we left off in [part 1](https://www.theindependentvariable.co.uk/blog/tidy-eval-r/). 
 
 We had a `summarize_avg` function that takes a data frame and a column name as string and finds the average of that column. However we don't want to input column name as string, but as object as we experience in all tidyverse functions. Let's remember what we had before 
 

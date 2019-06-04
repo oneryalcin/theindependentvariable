@@ -2,7 +2,7 @@
 author: Mehmet Oner Yalcin
 categories:
 - Degisik
-date: "2019-04-02"
+date: "2029-04-02"
 description: "Bir tanim birak"
 featured: pic02.jpg
 featuredalt: Pic 2
@@ -10,6 +10,7 @@ featuredpath: date
 linktitle: ""
 title: Ilk post denemesi
 type: post
+draft: true
 ---
 
 Hugo uses the excellent [go][] [html/template][gohtmltemplate] library for

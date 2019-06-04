@@ -2,7 +2,7 @@
 author: Unknown Author
 categories:
 - Go
-date: "2014-04-02"
+date: "2034-04-02"
 description: ""
 featured: pic02.jpg
 featuredalt: Pic 2
@@ -10,6 +10,7 @@ featuredpath: date
 linktitle: ""
 title: (Hu)go Template Primer
 type: post
+draft: true
 ---
 
 Hugo uses the excellent [go][] [html/template][gohtmltemplate] library for
