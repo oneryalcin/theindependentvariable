@@ -141,8 +141,8 @@ hist(py$unfair_series, bins= max(py$unfair_series) -1, xlab = &quot;Consecutive 
 <p>After looking at the result of histogram and the table, no name frustrated looking gentleman grasped the idea. He was no longer frustrated looking no name gentleman. Excitingly he said:
 - Right! Makes very much sense now. I think we can even quantify the transition matrix for the casino coin! All we need to take the square root of the first in the table. That should give us the probaility of transitioning from HEADS to TAILS or TAILS to HEADS. If it is different than 0.5 we know it’s not a fair coin and we can find how sticky it is.</p>
 <p>Detective nodded his head:</p>
-<p>- Exactly! I’m sure fair looking coin, is also unfair. It is a <strong><em>HeisenCoin</em></strong>. Anyways, shall we look at the casino dataset?</p>
-<p>Satisfied looking no name gentleman agreed. Detective loaded the casino dataset for analysis:</p>
+<p>- Exactly! This is interesting since the coin is both fair and unfair at the same time. It is a <strong><em>HeisenCoin</em></strong>. I coined this term! Anyways, shall we look at the casino dataset?</p>
+<p>Satisfied looking no name gentleman was not very happy with this silly joke but didn’t want to say it outloud. Simply smiled and agreed to look at casino data. Detective loaded the casino dataset for analysis:</p>
 <pre class="python"><code>dataset[:20]</code></pre>
 <pre><code>## array([0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1])</code></pre>
 <pre class="python"><code>casino_series = np.array([len(list(x)) for key, x in groupby(dataset)])

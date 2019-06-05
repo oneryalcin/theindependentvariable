@@ -242,10 +242,10 @@ After looking at the result of histogram and the table, no name frustrated looki
  
 Detective nodded his head:
 
-\- Exactly! I'm sure fair looking coin, is also unfair. It is a ***HeisenCoin***. Anyways, shall we look at the casino dataset? 
+\- Exactly! This is interesting since the coin is both fair and unfair at the same time. It is a ***HeisenCoin***. I coined this term! Anyways, shall we look at the casino dataset? 
 
 
-Satisfied looking no name gentleman agreed. Detective loaded the casino dataset for analysis:
+Satisfied looking no name gentleman was not very happy with this silly joke but didn't want to say it outloud. Simply smiled and agreed to look at casino data. Detective loaded the casino dataset for analysis:
 
 ```{python}
 dataset[:20]

@@ -18,7 +18,7 @@ disableLanguages        = ["pl", "fr"]
   jsFiles               = ["default"]
   # Sets options for highlight.js
   highlightjs           = true
-  highlightjsTheme      = "atom-one-light"
+  highlightjsTheme      = "darcula"
   highlightjsLang       = ["html", "css", "js", "toml", "R", "r" , "Python", "python"]
   
   #MathJaxCDN            = "//cdnjs.cloudflare.com/ajax/libs"
