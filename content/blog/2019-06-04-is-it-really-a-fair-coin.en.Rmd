@@ -1,0 +1,267 @@
+---
+title: 'Is it really a fair coin? '
+author: Mehmet Oner Yalcin
+date: '2019-06-04'
+slug: is-it-really-a-fair-coin (Bayesian Detective Bureau)
+categories:
+  - Probability
+tags:
+  - R
+description: ''
+featured: ''
+featuredalt: ''
+featuredpath: ''
+linktitle: ''
+type: post
+---
+
+Unlike any other detective, he was not not very much into chasing leads out in the wild world, running after serial killers, or going into adventures like Indian Jones. He was way to lazy to become a real detective woring in the field. But let's make no mistake, he loves solving mysteries, just he always hated rain and cold, and chose to be home cat. 
+
+He prefered to be Sherlock Holmes of pen and paper or at most few lines of code. He has an unusual portfolio of clients. They vary from those who lost a lot of money in gambling and want to prove casinos are cheating, to high profile scientists tring to decide when to launch a spacecraft, or football coaches looking for a new defensive midfielder but not trusting his own scouts. 
+
+It was a another miserable morning, raining since he woke up, that's a day he enjoys his tea and bagel in his tiny rooftop office. Rain drops sounds hitting on the roof together with warm office made him almost a sleep. He couldn't finish the article in the newspaper telling two airline crashes in three days already caused many conspiracy theories, he fell a sleep while thinking the expected number of days between twp crashes, and decided all normal. 
+
+His door was knocked and a frustrated looking man came in, he woke up briefly, not realizing this frustrated looking man was a client. It always takes a min or two for him to wake up. 
+
+After a bried silence, detective said 
+
+\- Ha? 
+\- Is this the bayesian detective bureau? 
+\- ...
+\- Not sure I'm in the correct place, Errmm..I'm looking for investigator Independent Variable. 
+
+Yes, that's what was written in his business card, *Mr. Independent Variable - Private Investigator*
+
+\- Yes, it's ... me, 
+
+while waking up.  
+
+\- My name is , well, doesn't really matter.. I am an investigator from a regulatory body to make sure casinos are relatively fair to customers, at least they don't do something hidden we don't know. There is this particular casino with dodgy name called *Casino Trust* and they run basically a game very similar to coin flip. Casino customers complain that the digital coin flip is biased. Casino provided me the last 50000 flip results, and honestly it looks fair to me. Almost half of the flips was tails and and the other half was heads. I cannot really say that it is a biased game. However we have excessive amount of complaints from clients so we have to really dig. I am wondering detective, can you also have a look at it? 
+
+Our detective turn on his PC and started looking at the coin flips:
+
+```{r, include=FALSE}
+library(reticulate)
+use_python("/Users/mya03/dev/junk/venv3/bin/python3")
+
+set.seed(42)
+
+# Function reference: https://stephens999.github.io/fiveMinuteStats/simulating_discrete_chains_1.html
+
+run.mc.sim <- function( P, num.iters = 50 ) {
+    
+    # number of possible states
+    num.states <- nrow(P)
+    
+    # stores the states X_t through time
+    states     <- numeric(num.iters)
+    
+    # initialize variable for first state 
+    states[1]    <- 1
+    
+    for(t in 2:num.iters) {
+        
+        # probability vector to simulate next state X_{t+1}
+        p  <- P[states[t-1], ]
+        
+        ## draw from multinomial and determine state
+        states[t] <-  which(rmultinom(1, 1, p) == 1)
+    }
+    return(states)
+}
+
+# Markov Chain Transition Matrix
+p<- matrix(c( 0.6, 0.4, 
+                0.4, 0.6), nrow=2, ncol=2)
+
+casino <- run.mc.sim(p,num.iters = 50000) -1 
+```
+
+
+```{python, include=FALSE}
+import numpy as np
+
+dataset  = np.array([int(x) for x in r.casino])
+
+```
+
+In the dataset 0 represents **tails** and 1 represent **heads**
+
+```{python}
+print(dataset)
+```
+
+It has 50000 games :
+```{python}
+len(dataset)
+```
+
+And as the gentelmen said, the expected value is pretty close to 0.5 which indeed looks like a fair coin
+
+```{python}
+dataset.mean()
+```
+
+
+Detective puzzled a bit for a moment, as it seems pretty regular. After all it's hard to blame the casino for not being fair if the 50000 game dataset shows expected value is 0.5
+
+Detective draw a quick diagram on the paper, as he loves to think visually and pen and paper are generally the best tools while thinking on the problem:
+
+- This is a state diagram of a fair coin, said detective. And in a fair coin getting HEADS in the next game is independent of the previous game, meaning our current outcome won't effect the next game result. `P(HEADS) x P(TAILS) = 0` meaning probability events are independent. 
+
+```{r, include=FALSE, fig.width=5, fig.height=5}
+# library(diagram)
+# p_fair<- matrix(c( 0.5, 0.5,
+#                 0.5, 0.5), nrow=2, ncol=2)
+# plotmat(p_fair, relsize = 0.6, lwd=2, name=names, box.prop = 0.9, curve = 0.01, self.cex = 0.6)
+```
+![](/blog/2019-06-04-is-it-really-a-fair-coin.en_files/Screen Shot 2019-06-04 at 15.05.46.png)
+
+
+He looked a bit closer to the diagram, and started talking to himself as he does usually when he is focused on a problem,
+
+\- Himm, we know at least `P(HEADS|TAILS) + P(HEADS|HEADS) =  P(TAILS|HEADS) + P(TAILS|TAILS)`.  This ensures we have P(HEADS) = P(TAILS) = 0.5
+  and if we assume coin is fair then
+  
+- `P(HEADS|TAILS)` = 0.5 x 0.5 = 0.25 
+- `P(HEADS|HEADS)` = 0.5 x 0.5 = 0.25 
+- `P(TAILS|HEADS)` = 0.5 x 0.5 = 0.25
+- `P(TAILS|TAILS)` = 0.5 x 0.5 = 0.25
+
+The gentelmen was trying to follow our detective, he remembered one cruical point from client complaints. Number of clients said they believe if the previous game is HEADS, they think the next game is more likely HEADS. 
+
+\- Is it?! detective shouted. You are telling me events are not independent? That changes our assumption above. Gentleman puzzled :
+\- I don't get it, if the events are not independent how is it possible P(HEADS) = P(TAILS) = 0.5?
+
+Detective Independent Variable was very happy, and rewote the assumptions above:
+
+We all need to satisfy only one condition to keep P(HEADS) = P(TAILS) = 0.5.
+ - P(HEADS) = P(HEADS|TAILS) + P(HEADS|HEADS) / (P(HEADS) + P(TAILS)) =  0.5
+
+and let's say if our diagram changes, and the game outcome becomes stickier, meaning if previous result is HEADS this game result is also more likely HEADS, but keeping this symmetric would give us a P(HEADS) = P(TAILS) = 0.5 but a different dataset.
+
+![Stickier Transition State Diagram](/blog/2019-06-04-is-it-really-a-fair-coin.en_files/Screen Shot 2019-06-04 at 15.28.28.png)
+
+
+Gentleman started to get the idea now. But still he has questions:
+
+\- I got what you mean, but how can we prove this is the case?
+
+Detective thought a min, and said:
+
+\- I think there are number of ways we can prove it. But I'd like to explore both visually and analytically. In a fair coin case the possibility of transitioning from one state to another (i.e. HEADS > TAILS > HEADS  or TAILS > HEADS > TAILS) is =  0.5(transition in) x 0.5(transition out) = 0.25. similarly having two consecutive same face is  0.5 (transition) x 0.5 (same face) x 0.5 (transition out) = 0.125 as all these events are independent. If we plot the histogram of coins series where we get the same coin consutively in a fair coin we should see this diminishing factor of 0.5 with each number. In our loaded coin example this would be different. Diminishing factor would be different and more gradual as it's more sticky. Transitioning from one state to another would be 0.1(transition in) x 0.1(transition out) = 0.01  and two conscutive same faces would be 0.1(transition in) x 0.9(same face) x 0.1(transition out) = 0.009.
+
+
+In general formula for N number of consecutive faces would be = P(transition in) x P(same face)^(n-1) x P(transition out)
+
+I'll generate an artifical 50000 fair coin flips to see it in action:
+
+```{python}
+import numpy as np
+np.random.seed(42)
+
+fair_coin = np.random.randint(0,2, 50000)
+fair_coin[:20]
+```
+
+above series would be summarized as  1(TAILS), 1 (HEADS), 3(TAILS), 1 (HEADS), 3 (TAILS), 1(HEADS), 4(TAILS).. etc 
+
+I will create exactly that series above. 
+
+```{python}
+from itertools import groupby
+series= np.array([len(list(x)) for key, x in groupby(fair_coin)])
+series[:10]
+```
+
+Let's look at the histogram of consecutive series:
+
+```{r, warning=FALSE, message=FALSE}
+hist(py$series, bins= max(py$series) -1, xlab = "Consecutive series", 
+     ylab = "Number of occurences", main = "Histogram of a fair coin consecutive same face occurences")
+```
+
+Let's also calculate the ratio of consequtive series, remember 1 consequtive means TAILS>TAILS or HEADS>HEADS.  and P(T>>H)xP(H)xP(H>>T) = 0.125
+
+```{r}
+table(py$series)/50000
+```
+
+
+Our detective continued talking:
+
+\- let's look at our not so fair coin model that depends on the previous state (only the last previous state not all previous states)
+
+![Sticky coin, P(TAILS|TAILS) = P(HEADS|HEADS) = 0.9](/blog/2019-06-04-is-it-really-a-fair-coin.en_files/Screen Shot 2019-06-05 at 09.43.53.png)
+
+```{r, include=FALSE}
+p_unfair <- matrix(c( 0.9, 0.1, 
+                      0.1, 0.9), nrow=2, ncol=2)
+
+unfair <- run.mc.sim(p_unfair, num.iters = 50000) -1
+```
+
+```{r}
+unfair[1:50]
+length(unfair)
+mean(unfair)
+```
+
+
+```{python}
+from itertools import groupby
+unfair_series= np.array([len(list(x)) for key, x in groupby(np.array(r.unfair))])
+unfair_series[:10]
+```
+
+
+```{r warning=FALSE, message=FALSE}
+table(py$unfair_series)/50000
+# 
+hist(py$unfair_series, bins= max(py$unfair_series) -1, xlab = "Consecutive series",
+     ylab = "Number of occurences in unfair coin", main = "Histogram of am unfair (with memory) coin consecutive same face occurences")
+```
+
+After looking at the result of histogram and the table, gentleman grasped the idea. Excitingly he said:
+ - Makes very much sense now, we can even quantify the transition matrix for the casino coin! All we need to take the square root of the first in the table. That should give us the probaility of transitioning from HEADS to TAILS or TAILS to HEADS. If it is different than 0.5 we know it's not a fair coin and we can find how sticky it is.
+ 
+Detective nodded his head:
+
+\- Exactly! Shall we look at the casion dataset? 
+
+
+Our detective loaded the casino dataset :
+
+```{python}
+dataset[:20]
+casino_series = np.array([len(list(x)) for key, x in groupby(dataset)])
+casino_series[:10]
+```
+
+```{r}
+table(py$casino_series)/50000
+```
+
+\- The first term is 0.16, this means we do have an unfair game and P(HEAD|TAILS) or P(TAILS|HEAD) = 0.4. Detective draw transition state diagram on a piece of paper. 
+
+![Casino Coin Transition State Diagram](/blog/2019-06-04-is-it-really-a-fair-coin.en_files/Screen Shot 2019-06-05 at 10.23.08.png)
+
+
+Gentleman was thrilled:
+\ -  Yes indeed! The second term, two consecutive faces TAILS>TAILS or HEADS>HEADS must be then P(transiton in) x P(same face) x P(Transition out) =  0.4 x 0.6 x 0.4 = 0.096 and indeed true, our simulation result is 0.9632! Three consecutive faces must be 0.4 x 0.6 x 0.6 x 0.4 = 0.0576 very close tou our findings of 0.597. Thank you detective! you are the best! 
+ 
+Our detective was going to give a bit more information but gentleman was in hurry, he just said one last sentence before gentleman leaves the office:
+
+\- Next time if you have any suspicion that an event depens on its immediat previous state then check out Markov Chains 
+
+
+
+
+
+
+
+
+
+
+
+
