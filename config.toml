@@ -21,7 +21,8 @@ disableLanguages        = ["pl", "fr"]
   highlightjsTheme      = "atom-one-light"
   highlightjsLang       = ["html", "css", "js", "toml", "R", "r" , "Python", "python"]
   
-  MathJaxCDN            = "//cdnjs.cloudflare.com/ajax/libs"
+  #MathJaxCDN            = "//cdnjs.cloudflare.com/ajax/libs"
+  MathJaxCDN            = "//cdn.bootcss.com"
   MathJaxVersion        = "2.7.5"
     
   # Sets where "View More Posts" links to

@@ -17,7 +17,7 @@ type: post
 
 
 
-<p>Unlike any other detectives, he was not not very much into chasing leads out in the wild. He never enjoyed running after serial killers, or going into adventures like Indiana Jones. He was way way too lazy to become a real detective. But let’s make no mistake, like any other detective he loves solving mysteries. Only the problem is that he always hated rain and cold, and prefer to be home cat.</p>
+<p>Unlike any other detectives, he was not not very much into chasing leads out in the wild. He never enjoyed running after serial killers, or going into adventures like Indiana Jones. He was way way too lazy to become a real detective. But let’s make no mistake, like any other detective he loves solving mysteries. Only problem is that he always hated rain snow or cold, and preferred to be home cat.</p>
 <p>He was the Sherlock Holmes of pen, paper and few lines of computer code. Since he’s an unusal detective, his clients were too unusal. They vary from those who lost a lot of money in gambling and want to prove casinos are cheating, to high profile scientists tring to decide when to launch a spacecraft, or football coaches looking for a new defensive midfielder but not trusting his own scouts.</p>
 <p>It was a another miserable morning, rain never stopped for a moment since he woke up. That’s one of the days you want to spend under a blanket and do simply nothing but only sleep. Nevertheless he came to office and now he was enjoying his brewed tea and bagel in his tiny rooftop office. Brewing his tea is one of the few things he was never lazy about, as he always hated bagged teas.</p>
 <p>After finishing his modest breakfast, he briefly checked papers. They were all telling about two airline crashes in three days. It already caused many conspiracy theories. He didn’t take it immediately serious as he knows that also papers tell him Mars’ gravity would change his love life but he knows the bagel he just ate two mins ago has more gravitational force than Mars, considering the distance between Mars and him and Bagel and him. Then he went back to the newspaper article, thinking having plane crashes in three days apart is possibly very normal, just he needs to look at plance crash data. Nothing to worry about he said. But he decided to check it later when he has some free time from laziness.</p>
@@ -40,31 +40,31 @@ type: post
 <p>It has 50000 games :</p>
 <pre class="python"><code>len(dataset)</code></pre>
 <pre><code>## 50000</code></pre>
-<p>And as the no name gentlemen said, the P(H) is pretty close to 0.5 which indeed looks like a fair coin</p>
+<p>And as the no name gentlemen said, the <span class="math inline">\(P(H)\)</span> is pretty close to <span class="math inline">\(0.5\)</span> which indeed looks like a fair coin</p>
 <pre class="python"><code>dataset.mean()</code></pre>
 <pre><code>## 0.5002</code></pre>
-<p>Detective puzzled a bit for a moment, as game results seems pretty regular and fair. After all it’s hard to blame the casino for not being fair if the 50000 game if dataset shows P(HEADS) ~ P(TAILS) ~ 0.5</p>
+<p>Detective puzzled a bit for a moment, as game results seems pretty regular and fair. After all it’s hard to blame the casino for not being fair if the 50000 game if dataset shows <span class="math inline">\(P(HEADS)\)</span> ~ <span class="math inline">\(P(TAILS)\)</span> ~ <span class="math inline">\(0.5\)</span></p>
 <p>Detective draw a quick diagram on the paper, as he loves to think visually and pen and paper are generally the best tools while thinking on the problem:</p>
 <ul>
-<li>This is a state diagram of a fair coin, said detective. And in a fair coin getting HEADS in the next game is independent from the outcome of the previous game, <code>P(HEADS|TAILS) = P(HEADS|HEADS) = 0.5</code> meaning probability events are independent.</li>
+<li>This is a state diagram of a fair coin, said detective. And in a fair coin getting HEADS in the next game is independent from the outcome of the previous game, <span class="math inline">\(P(HEADS|TAILS) = P(HEADS|HEADS) = 0.5\)</span> meaning probability events are independent.</li>
 </ul>
 <p><img src="/blog/2019-06-04-is-it-really-a-fair-coin.en_files/Screen%20Shot%202019-06-04%20at%2015.05.46.png" /></p>
 <p>He looked a bit closer to the diagram, and started talking to himself as he always does when he is focused,</p>
-<p>- Himm, we know at least <code>P(HEADS|TAILS) + P(HEADS|HEADS) =  P(TAILS|HEADS) + P(TAILS|TAILS)</code>. This guarantees we have P(HEADS) = P(TAILS) = 0.5
+<p>- Himm, we know at least <span class="math inline">\(P(HEADS|TAILS) + P(HEADS|HEADS) = P(TAILS|HEADS) + P(TAILS|TAILS)\)</span>. This guarantees we have <span class="math inline">\(P(HEADS) = P(TAILS) = 0.5\)</span>
 and if we assume coin is fair then</p>
 <ul>
-<li><code>P(HEADS|TAILS)</code> = 0.5 x 0.5 = 0.25</li>
-<li><code>P(HEADS|HEADS)</code> = 0.5 x 0.5 = 0.25</li>
-<li><code>P(TAILS|HEADS)</code> = 0.5 x 0.5 = 0.25</li>
-<li><code>P(TAILS|TAILS)</code> = 0.5 x 0.5 = 0.25</li>
+<li><span class="math inline">\(P(HEADS|TAILS) = 0.5 \times 0.5 = 0.25\)</span></li>
+<li><span class="math inline">\(P(HEADS|HEADS) = 0.5 \times 0.5 = 0.25\)</span></li>
+<li><span class="math inline">\(P(TAILS|HEADS) = 0.5 \times 0.5 = 0.25\)</span></li>
+<li><span class="math inline">\(P(TAILS|TAILS) = 0.5 \times 0.5 = 0.25\)</span></li>
 </ul>
 <p>The gentlemen was trying to follow the detective, thinking about independency of coin flips. Right at that point he remembered customer complaints. Number of customers said they believed if the previous game was HEADS, they think the next game would be more likely HEADS too.</p>
 <p>- Is it?! detective shouted. You are telling me events are not independent? That changes our assumption, himm. Gentleman puzzled :
-- I don’t get it fully, if the events are not independent how is it possible P(HEADS) = P(TAILS) = 0.5?</p>
+- I don’t get it fully, if the events are not independent how is it possible <span class="math inline">\(P(HEADS) = P(TAILS) = 0.5\)</span>?</p>
 <p>Detective <em>Independent Variable</em> was looking excited, and rewote the assumptions:</p>
-<p>We all need to satisfy only one condition to keep P(HEADS) = P(TAILS) = 0.5.
-- P(HEADS) = P(HEADS|TAILS) + P(HEADS|HEADS) / (P(HEADS) + P(TAILS)) = 0.5</p>
-<p>and let’s say if our diagram changes, and the game outcome becomes stickier, meaning if previous result is HEADS this game result is also more likely be HEADS, and keeping this symmetry would give us a P(HEADS) = P(TAILS) = 0.5. Just our dataset would have different number of consecutive same faces. If the game becomes stickier, than we would see more consecutive series like (TAIL&gt;TAIL&gt;TAIL) than usual.</p>
+<p>We all need to satisfy only one condition to keep <span class="math inline">\(P(HEADS) = P(TAILS) = 0.5\)</span>.Transition probabilites must be equal:</p>
+<p><span class="math display">\[P(HEADS|TAILS) = P(TAILS|HEADS)\]</span></p>
+<p>and let’s say if our diagram changes, and the game outcome becomes stickier, meaning if previous result is HEADS this game result is also more likely be HEADS, and keeping this symmetry would give us a <span class="math inline">\(P(HEADS) = P(TAILS) = 0.5\)</span>. Just our dataset would have different number of consecutive same faces. If the game becomes stickier, than we would see more consecutive series like (TAIL&gt;TAIL&gt;TAIL) than usual.</p>
 <div class="figure">
 <img src="/blog/2019-06-04-is-it-really-a-fair-coin.en_files/Screen%20Shot%202019-06-04%20at%2015.28.28.png" alt="Stickier Transition State Diagram" />
 <p class="caption">Stickier Transition State Diagram</p>
@@ -72,8 +72,9 @@ and if we assume coin is fair then</p>
 <p>Gentleman started to get the idea now. But still he has questions:</p>
 <p>- I think got what you mean, but how can we prove this is the case?</p>
 <p>Detective thought a min, and said:</p>
-<p>- I think there are number of ways we can prove it. But I’d like to explore both visually and analitically. In a fair coin case the possibility of transitioning from one state to another (i.e. HEADS &gt; TAILS &gt; HEADS or TAILS &gt; HEADS &gt; TAILS) is = 0.5(transition in) x 0.5(transition out) = 0.25. similarly having two consecutive same face is 0.5 (transition) x 0.5 (same face) x 0.5 (transition out) = 0.125 as all these events are independent. If we plot the histogram of coins series where we get the same coin consutively in a fair coin we should see this diminishing factor of 0.5 with each number. In our loaded coin example this would be different. Diminishing factor would be different and more gradual as it’s more sticky. Transitioning from one state to another would be 0.1(transition in) x 0.1(transition out) = 0.01 and two conscutive same faces would be 0.1(transition in) x 0.9(same face) x 0.1(transition out) = 0.009.</p>
-<p>In general formula for N number of consecutive faces would be; P(transition in) x P(same face)^(n-1) x P(transition out)</p>
+<p>- I think there are number of ways we can prove it. But I’d like to explore both visually and analitically. In a fair coin case the possibility of transitioning from one state to another (i.e. HEADS &gt; TAILS &gt; HEADS or TAILS &gt; HEADS &gt; TAILS) is = <span class="math inline">\(0.5(transition in) \times 0.5(transition out) = 0.25\)</span>. similarly having two consecutive same face is <span class="math inline">\(0.5 (transition) \times 0.5 (same face) \times 0.5 (transition out) = 0.125\)</span> as all these events are independent. If we plot the histogram of coins series where we get the same coin consutively in a fair coin we should see this diminishing factor of <span class="math inline">\(0.5\)</span> with each number. In our loaded coin example this would be different. Diminishing factor would be different and more gradual as it’s more sticky. Transitioning from one state to another would be <span class="math inline">\(0.1(transition in) \times 0.1(transition out) = 0.01\)</span> and two conscutive same faces would be <span class="math inline">\(0.1(transition in) \times 0.9(same face) \times 0.1(transition out) = 0.009\)</span>.</p>
+<p>In general formula for <span class="math inline">\(n\)</span> number of consecutive faces would be; <span class="math display">\[P(n\ Consecutive\ faces) = P(transition\ in) \times P(same\ face)^{(n-1)} \times P(transition\ out)\]</span></p>
+<p>Assuming <span class="math inline">\(P(transition\ in) = P(transition\ out)\)</span> our formula would be <span class="math display">\[P(n\ Consecutive\ faces) = P(transition)^2 \times P(same\ face)^{(n-1)} \]</span></p>
 <p>I’ll generate an artifical 50000 fair coin flips to see it in action:</p>
 <pre class="python"><code>import numpy as np
 np.random.seed(42)
@@ -81,7 +82,7 @@ np.random.seed(42)
 fair_coin = np.random.randint(0,2, 50000)
 fair_coin[:20]</code></pre>
 <pre><code>## array([0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0])</code></pre>
-<p>above series would be summarized as 1(TAILS), 1 (HEADS), 3(TAILS), 1 (HEADS), 3 (TAILS), 1(HEADS), 4(TAILS).. etc</p>
+<p>above series would be summarized as <span class="math inline">\(1T, 1H, 3T, 1H, 3T, 1H, 4T...\)</span> etc</p>
 <p>I will create exactly that series above.</p>
 <pre class="python"><code>from itertools import groupby
 series= np.array([len(list(x)) for key, x in groupby(fair_coin)])
@@ -91,7 +92,7 @@ series[:10]</code></pre>
 <pre class="r"><code>hist(py$series, bins= max(py$series) -1, xlab = &quot;Consecutive series&quot;, 
      ylab = &quot;Number of occurences&quot;, main = &quot;Histogram of a fair coin consecutive same face occurences&quot;)</code></pre>
 <p><img src="/blog/2019-06-04-is-it-really-a-fair-coin.en_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
-<p>Let’s also calculate the ratio of consequtive series, remember 1 consecutive means TAILS&gt;TAILS or HEADS&gt;HEADS. and P(T&gt;&gt;H)xP(H)xP(H&gt;&gt;T) = 0.125</p>
+<p>Let’s also calculate the ratio of consequtive series, remember 1 consecutive means TAILS&gt;TAILS or HEADS&gt;HEADS. and <span class="math inline">\(P(H|T)\times P(H) \times P(T|H) = 0.125\)</span></p>
 <pre class="r"><code>table(py$series)/50000</code></pre>
 <pre><code>## 
 ##       1       2       3       4       5       6       7       8       9 
@@ -140,7 +141,7 @@ hist(py$unfair_series, bins= max(py$unfair_series) -1, xlab = &quot;Consecutive 
 <p>After looking at the result of histogram and the table, no name frustrated looking gentleman grasped the idea. He was no longer frustrated looking no name gentleman. Excitingly he said:
 - Right! Makes very much sense now. I think we can even quantify the transition matrix for the casino coin! All we need to take the square root of the first in the table. That should give us the probaility of transitioning from HEADS to TAILS or TAILS to HEADS. If it is different than 0.5 we know it’s not a fair coin and we can find how sticky it is.</p>
 <p>Detective nodded his head:</p>
-<p>- Exactly! Shall we look at the casion dataset?</p>
+<p>- Exactly! I’m sure fair looking coin, is also unfair. It is a <strong><em>HeisenCoin</em></strong>. Anyways, shall we look at the casino dataset?</p>
 <p>Satisfied looking no name gentleman agreed. Detective loaded the casino dataset for analysis:</p>
 <pre class="python"><code>dataset[:20]</code></pre>
 <pre><code>## array([0, 1, 0, 0, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 1, 1])</code></pre>
@@ -153,12 +154,66 @@ casino_series[:10]</code></pre>
 ## 0.16004 0.09632 0.05970 0.03414 0.01988 0.01250 0.00746 0.00442 0.00284 
 ##      10      11      12      13      14      15      16      17      18 
 ## 0.00170 0.00082 0.00054 0.00032 0.00028 0.00008 0.00006 0.00006 0.00002</code></pre>
-<p>- The first term is 0.16, this means we indeed DO have an unfair game and P(HEAD|TAILS) or P(TAILS|HEAD) = 0.4. Detective draw transition state diagram on a piece of paper.</p>
+<p>- The first term is <span class="math inline">\(0.16\)</span>, this means we indeed DO have an unfair game and <span class="math inline">\(P(HEAD|TAILS)\)</span> or <span class="math inline">\(P(TAILS|HEAD) = 0.4\)</span>. Detective draw transition state diagram on a piece of paper.</p>
 <div class="figure">
 <img src="/blog/2019-06-04-is-it-really-a-fair-coin.en_files/Screen%20Shot%202019-06-05%20at%2010.23.08.png" alt="Casino Coin Transition State Diagram" />
 <p class="caption">Casino Coin Transition State Diagram</p>
 </div>
 <p>Gentleman was thrilled:
- - Yes indeed! The second term, two consecutive faces TAILS&gt;TAILS or HEADS&gt;HEADS must be then P(transiton in) x P(same face) x P(Transition out) = 0.4 x 0.6 x 0.4 = 0.096 and indeed true, our simulation result is 0.9632! Three consecutive faces must be 0.4 x 0.6 x 0.6 x 0.4 = 0.0576 very close tou our findings of 0.597. Thank you detective! you are the best!</p>
+ - Yes indeed! The second term, two consecutive faces TAILS&gt;TAILS or HEADS&gt;HEADS must be then <span class="math inline">\(P(2) = P(transition)^2 \times P(same\ face) = 0.4^2 \times 0.6 = 0.096\)</span> and indeed true, our simulation result is$ <span class="math inline">\(0.9632\)</span>! Three consecutive faces must be <span class="math inline">\(P(3) = 0.4^2 \times 0.6^2 = 0.0576\)</span> very close to our simulation findings of <span class="math inline">\(0.597\)</span>. Thank you detective! you are the best!</p>
 <p>Our detective was going to give a bit more information but thrilled looking no name gentleman was in hurry, as he was running to quit. Detective just said one last sentence before he leaves the office:</p>
-<p>- Next time if you have any suspicion that an event depends on its immediate previous state then check out Markov Chains first. and … yes you are welcome…</p>
+<p>- Next time if you are suspicious that an event depends on its immediate previous state then check out Markov Chains first. and … yes you are welcome…</p>
+<div id="notes" class="section level4">
+<h4>NOTES</h4>
+<p>A simple python code that populates an unfair (sticky) markov coin:</p>
+<pre><code>import random
+import numpy as np 
+
+def markov_coin(n, p=0.5):
+    &quot;&quot;&quot; 
+    Populate n samples of coin flips with stickiness probability of p
+    p = 0.5 is a fair coin, p&gt;0.5 is a sticky coin, p&lt;0.5 is a hot potato coin.
+    Sticky coin tends to stay in the same state more, and hot potato coin is eager to 
+    change state
+    &quot;&quot;&quot;
+    
+    # Initialize list
+    arr = list()
+    arr.append(random.random()&gt;0.5)
+    
+    for i in range(1,n):
+        if random.random() &lt; p:
+            arr.append(arr[i-1])
+        else:
+            arr.append(not arr[i-1])
+    return np.array(arr)
+    </code></pre>
+<p>Markov chain model in <code>R</code>. Slightly more complete example compared to pythona s it takes transition matrix of <span class="math inline">\(P\)</span></p>
+<pre><code># Function reference: https://stephens999.github.io/fiveMinuteStats/simulating_discrete_chains_1.html
+
+run.mc.sim &lt;- function(P, num.iters = 50 ) {
+    
+    # number of possible states
+    num.states &lt;- nrow(P)
+    
+    # stores the states X_t through time
+    states     &lt;- numeric(num.iters)
+    
+    # initialize variable for first state 
+    states[1]    &lt;- 1
+    
+    for(t in 2:num.iters) {
+        
+        # probability vector to simulate next state X_{t+1}
+        p  &lt;- P[states[t-1], ]
+        
+        ## draw from multinomial and determine state
+        states[t] &lt;-  which(rmultinom(1, 1, p) == 1)
+    }
+    return(states)
+}
+
+# Markov Chain Transition Matrix
+P&lt;- matrix(c( 0.6, 0.4, 
+              0.4, 0.6), nrow=2, ncol=2)</code></pre>
+</div>
