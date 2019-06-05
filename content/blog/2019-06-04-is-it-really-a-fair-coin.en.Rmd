@@ -15,30 +15,40 @@ linktitle: ''
 type: post
 ---
 
-Unlike any other detective, he was not not very much into chasing leads out in the wild world, running after serial killers, or going into adventures like Indian Jones. He was way to lazy to become a real detective woring in the field. But let's make no mistake, he loves solving mysteries, just he always hated rain and cold, and chose to be home cat. 
+Unlike any other detectives, he was not not very much into chasing leads out in the wild. He never enjoyed running after serial killers, or going into adventures like Indiana Jones. He was way way too lazy to become a real detective. But let's make no mistake, like any other detective he loves solving mysteries. Only the problem is that he always hated rain and cold, and prefer to be home cat. 
 
-He prefered to be Sherlock Holmes of pen and paper or at most few lines of code. He has an unusual portfolio of clients. They vary from those who lost a lot of money in gambling and want to prove casinos are cheating, to high profile scientists tring to decide when to launch a spacecraft, or football coaches looking for a new defensive midfielder but not trusting his own scouts. 
+He was the Sherlock Holmes of pen, paper and few lines of computer code. Since he's an unusal detective, his clients were too unusal. They vary from those who lost a lot of money in gambling and want to prove casinos are cheating, to high profile scientists tring to decide when to launch a spacecraft, or football coaches looking for a new defensive midfielder but not trusting his own scouts. 
 
-It was a another miserable morning, raining since he woke up, that's a day he enjoys his tea and bagel in his tiny rooftop office. Rain drops sounds hitting on the roof together with warm office made him almost a sleep. He couldn't finish the article in the newspaper telling two airline crashes in three days already caused many conspiracy theories, he fell a sleep while thinking the expected number of days between twp crashes, and decided all normal. 
 
-His door was knocked and a frustrated looking man came in, he woke up briefly, not realizing this frustrated looking man was a client. It always takes a min or two for him to wake up. 
+It was a another miserable morning, rain never stopped for a moment since he woke up. That's one of the days you want to spend under a blanket and do simply nothing but only sleep. Nevertheless he came to office and now he was enjoying his brewed tea and bagel in his tiny rooftop office. Brewing his tea is one of the few things he was never lazy about, as he always hated bagged teas. 
 
-After a bried silence, detective said 
+After finishing his modest breakfast, he briefly checked npapers. They were all telling two airline crashes in three days already caused many conspiracy theories. He knows also papers tell him Mars' gravity would change his love life but he knows the bagel he just ate two mins ago has more gravitational force than Mars, considering the distance between Mars and him and Bagel and him. Then he went back to the newspaper article, thinking having plane crashes in three days apart is possibly very normal, just he needs to look at plance crash data. Nothing to worry about he said. But he decided to check it later when he has some free time from laziness. 
 
-\- Ha? 
-\- Is this the bayesian detective bureau? 
+He couldn't finish reading the rest of the newspaper as the rain sound and warm office seat made him sleepy.
+
+After a while, his door was knocked and a frustrated looking man came in, detective woke up briefly, hoping this frustrated man is just a dream and not a client, he preferes sleep to frustrated looking clients. 
+
+It always takes a min or two for him to wake up. 
+
+After a brief silence, detective shows some life sign and started cleaning last bit of sesame seeds in his teeth. He enjoys bagel but sesam always stuck his teeth:
+
+\- yes?...Mr..?
+
+\- Is this the bayesian detective bureau? asked frustated looking man.  
+
 \- ...
+
 \- Not sure I'm in the correct place, Errmm..I'm looking for investigator Independent Variable. 
 
-Yes, that's what was written in his business card, *Mr. Independent Variable - Private Investigator*
+Yes, that's exactly what was written in his business card, *Mr. Independent Variable - Private Investigator*
 
 \- Yes, it's ... me, 
 
-while waking up.  
+while waking up. frustrated man didn't wait for detective to ask why he was here and immediately went into the subject: 
 
-\- My name is , well, doesn't really matter.. I am an investigator from a regulatory body to make sure casinos are relatively fair to customers, at least they don't do something hidden we don't know. There is this particular casino with dodgy name called *Casino Trust* and they run basically a game very similar to coin flip. Casino customers complain that the digital coin flip is biased. Casino provided me the last 50000 flip results, and honestly it looks fair to me. Almost half of the flips was tails and and the other half was heads. I cannot really say that it is a biased game. However we have excessive amount of complaints from clients so we have to really dig. I am wondering detective, can you also have a look at it? 
+\- My name is , well, doesn't really matter.. I am an investigator from a regulatory body to make sure casinos in the country are relatively fair to customers, well... at least they don't do something hidden we don't know. There is this particular casino with a bit dodgy name called *Casino Trust* and they run basically a simple game very similar to a coin flip. We are receiving a lot of complaints from the casino customers that the digital coin flip is biased. I went yesterday to casino and they provided me the last 50000 flip results, and honestly it looks coin flip is fair to me. Almost half of the flips was tails and and the other half was heads. I cannot really say that it is a biased game. However we have excessive amount of complaints from clients so we have to really dig deep. I am wondering detective, can you also have a look at it? 
 
-Our detective turn on his PC and started looking at the coin flips:
+Our detective was already awake after he heard coin flips. Feed him with questions about coin flips or dice games and you get his attenton immediately. He turned on his PC and started looking at the coin flips data:
 
 ```{r, include=FALSE}
 library(reticulate)
@@ -85,7 +95,7 @@ dataset  = np.array([int(x) for x in r.casino])
 
 ```
 
-In the dataset 0 represents **tails** and 1 represent **heads**
+In the dataset 0 represents **tails** and 1 represent **heads** said no name gentleman.
 
 ```{python}
 print(dataset)
@@ -96,18 +106,18 @@ It has 50000 games :
 len(dataset)
 ```
 
-And as the gentelmen said, the expected value is pretty close to 0.5 which indeed looks like a fair coin
+And as the no name gentlemen said, the P(H) is pretty close to 0.5 which indeed looks like a fair coin
 
 ```{python}
 dataset.mean()
 ```
 
 
-Detective puzzled a bit for a moment, as it seems pretty regular. After all it's hard to blame the casino for not being fair if the 50000 game dataset shows expected value is 0.5
+Detective puzzled a bit for a moment, as game results seems pretty regular and fair. After all it's hard to blame the casino for not being fair if the 50000 game if dataset shows P(HEADS) ~ P(TAILS) ~ 0.5
 
 Detective draw a quick diagram on the paper, as he loves to think visually and pen and paper are generally the best tools while thinking on the problem:
 
-- This is a state diagram of a fair coin, said detective. And in a fair coin getting HEADS in the next game is independent of the previous game, meaning our current outcome won't effect the next game result. `P(HEADS) x P(TAILS) = 0` meaning probability events are independent. 
+- This is a state diagram of a fair coin, said detective. And in a fair coin getting HEADS in the next game is independent from the outcome of the previous game, `P(HEADS|TAILS) = P(HEADS|HEADS) = 0.5` meaning probability events are independent. 
 
 ```{r, include=FALSE, fig.width=5, fig.height=5}
 # library(diagram)
@@ -118,9 +128,9 @@ Detective draw a quick diagram on the paper, as he loves to think visually and p
 ![](/blog/2019-06-04-is-it-really-a-fair-coin.en_files/Screen Shot 2019-06-04 at 15.05.46.png)
 
 
-He looked a bit closer to the diagram, and started talking to himself as he does usually when he is focused on a problem,
+He looked a bit closer to the diagram, and started talking to himself as he always does when he is focused,
 
-\- Himm, we know at least `P(HEADS|TAILS) + P(HEADS|HEADS) =  P(TAILS|HEADS) + P(TAILS|TAILS)`.  This ensures we have P(HEADS) = P(TAILS) = 0.5
+\- Himm, we know at least `P(HEADS|TAILS) + P(HEADS|HEADS) =  P(TAILS|HEADS) + P(TAILS|TAILS)`.  This guarantees we have P(HEADS) = P(TAILS) = 0.5
   and if we assume coin is fair then
   
 - `P(HEADS|TAILS)` = 0.5 x 0.5 = 0.25 
@@ -128,31 +138,30 @@ He looked a bit closer to the diagram, and started talking to himself as he does
 - `P(TAILS|HEADS)` = 0.5 x 0.5 = 0.25
 - `P(TAILS|TAILS)` = 0.5 x 0.5 = 0.25
 
-The gentelmen was trying to follow our detective, he remembered one cruical point from client complaints. Number of clients said they believe if the previous game is HEADS, they think the next game is more likely HEADS. 
+The gentlemen was trying to follow the detective, thinking about independency of coin flips. Right at that point he remembered customer complaints. Number of customers said they believed if the previous game was HEADS, they think the next game would be more likely HEADS too. 
 
-\- Is it?! detective shouted. You are telling me events are not independent? That changes our assumption above. Gentleman puzzled :
-\- I don't get it, if the events are not independent how is it possible P(HEADS) = P(TAILS) = 0.5?
+\- Is it?! detective shouted. You are telling me events are not independent? That changes our assumption, himm. Gentleman puzzled :
+\- I don't get it fully, if the events are not independent how is it possible P(HEADS) = P(TAILS) = 0.5?
 
-Detective Independent Variable was very happy, and rewote the assumptions above:
+Detective *Independent Variable* was looking excited, and rewote the assumptions:
 
 We all need to satisfy only one condition to keep P(HEADS) = P(TAILS) = 0.5.
  - P(HEADS) = P(HEADS|TAILS) + P(HEADS|HEADS) / (P(HEADS) + P(TAILS)) =  0.5
 
-and let's say if our diagram changes, and the game outcome becomes stickier, meaning if previous result is HEADS this game result is also more likely HEADS, but keeping this symmetric would give us a P(HEADS) = P(TAILS) = 0.5 but a different dataset.
+and let's say if our diagram changes, and the game outcome becomes stickier, meaning if previous result is HEADS this game result is also more likely be HEADS, and keeping this symmetry would give us a P(HEADS) = P(TAILS) = 0.5. Just our dataset would have different number of consecutive same faces. If the game becomes stickier, than we would see more consecutive series like (TAIL>TAIL>TAIL) than usual.  
 
 ![Stickier Transition State Diagram](/blog/2019-06-04-is-it-really-a-fair-coin.en_files/Screen Shot 2019-06-04 at 15.28.28.png)
 
-
 Gentleman started to get the idea now. But still he has questions:
 
-\- I got what you mean, but how can we prove this is the case?
+\- I think got what you mean, but how can we prove this is the case?
 
 Detective thought a min, and said:
 
-\- I think there are number of ways we can prove it. But I'd like to explore both visually and analytically. In a fair coin case the possibility of transitioning from one state to another (i.e. HEADS > TAILS > HEADS  or TAILS > HEADS > TAILS) is =  0.5(transition in) x 0.5(transition out) = 0.25. similarly having two consecutive same face is  0.5 (transition) x 0.5 (same face) x 0.5 (transition out) = 0.125 as all these events are independent. If we plot the histogram of coins series where we get the same coin consutively in a fair coin we should see this diminishing factor of 0.5 with each number. In our loaded coin example this would be different. Diminishing factor would be different and more gradual as it's more sticky. Transitioning from one state to another would be 0.1(transition in) x 0.1(transition out) = 0.01  and two conscutive same faces would be 0.1(transition in) x 0.9(same face) x 0.1(transition out) = 0.009.
+\- I think there are number of ways we can prove it. But I'd like to explore both visually and analitically. In a fair coin case the possibility of transitioning from one state to another (i.e. HEADS > TAILS > HEADS  or TAILS > HEADS > TAILS) is =  0.5(transition in) x 0.5(transition out) = 0.25. similarly having two consecutive same face is  0.5 (transition) x 0.5 (same face) x 0.5 (transition out) = 0.125 as all these events are independent. If we plot the histogram of coins series where we get the same coin consutively in a fair coin we should see this diminishing factor of 0.5 with each number. In our loaded coin example this would be different. Diminishing factor would be different and more gradual as it's more sticky. Transitioning from one state to another would be 0.1(transition in) x 0.1(transition out) = 0.01  and two conscutive same faces would be 0.1(transition in) x 0.9(same face) x 0.1(transition out) = 0.009.
 
 
-In general formula for N number of consecutive faces would be = P(transition in) x P(same face)^(n-1) x P(transition out)
+In general formula for N number of consecutive faces would be; P(transition in) x P(same face)^(n-1) x P(transition out)
 
 I'll generate an artifical 50000 fair coin flips to see it in action:
 
@@ -181,7 +190,7 @@ hist(py$series, bins= max(py$series) -1, xlab = "Consecutive series",
      ylab = "Number of occurences", main = "Histogram of a fair coin consecutive same face occurences")
 ```
 
-Let's also calculate the ratio of consequtive series, remember 1 consequtive means TAILS>TAILS or HEADS>HEADS.  and P(T>>H)xP(H)xP(H>>T) = 0.125
+Let's also calculate the ratio of consequtive series, remember 1 consecutive means TAILS>TAILS or HEADS>HEADS.  and P(T>>H)xP(H)xP(H>>T) = 0.125
 
 ```{r}
 table(py$series)/50000
@@ -190,7 +199,7 @@ table(py$series)/50000
 
 Our detective continued talking:
 
-\- let's look at our not so fair coin model that depends on the previous state (only the last previous state not all previous states)
+\- let's look at our not so fair coin model that depends on the previous state (current state depends only the last state not ALL previous states)
 
 ![Sticky coin, P(TAILS|TAILS) = P(HEADS|HEADS) = 0.9](/blog/2019-06-04-is-it-really-a-fair-coin.en_files/Screen Shot 2019-06-05 at 09.43.53.png)
 
@@ -222,15 +231,15 @@ hist(py$unfair_series, bins= max(py$unfair_series) -1, xlab = "Consecutive serie
      ylab = "Number of occurences in unfair coin", main = "Histogram of am unfair (with memory) coin consecutive same face occurences")
 ```
 
-After looking at the result of histogram and the table, gentleman grasped the idea. Excitingly he said:
- - Makes very much sense now, we can even quantify the transition matrix for the casino coin! All we need to take the square root of the first in the table. That should give us the probaility of transitioning from HEADS to TAILS or TAILS to HEADS. If it is different than 0.5 we know it's not a fair coin and we can find how sticky it is.
+After looking at the result of histogram and the table, no name frustrated looking gentleman grasped the idea. He was no longer frustrated looking no name gentleman. Excitingly he said:
+ - Right! Makes very much sense now. I think we can even quantify the transition matrix for the casino coin! All we need to take the square root of the first in the table. That should give us the probaility of transitioning from HEADS to TAILS or TAILS to HEADS. If it is different than 0.5 we know it's not a fair coin and we can find how sticky it is.
  
 Detective nodded his head:
 
 \- Exactly! Shall we look at the casion dataset? 
 
 
-Our detective loaded the casino dataset :
+Satisfied looking no name gentleman agreed. Detective loaded the casino dataset for analysis:
 
 ```{python}
 dataset[:20]
@@ -242,7 +251,7 @@ casino_series[:10]
 table(py$casino_series)/50000
 ```
 
-\- The first term is 0.16, this means we do have an unfair game and P(HEAD|TAILS) or P(TAILS|HEAD) = 0.4. Detective draw transition state diagram on a piece of paper. 
+\- The first term is 0.16, this means we indeed DO have an unfair game and P(HEAD|TAILS) or P(TAILS|HEAD) = 0.4. Detective draw transition state diagram on a piece of paper. 
 
 ![Casino Coin Transition State Diagram](/blog/2019-06-04-is-it-really-a-fair-coin.en_files/Screen Shot 2019-06-05 at 10.23.08.png)
 
@@ -250,9 +259,11 @@ table(py$casino_series)/50000
 Gentleman was thrilled:
 \ -  Yes indeed! The second term, two consecutive faces TAILS>TAILS or HEADS>HEADS must be then P(transiton in) x P(same face) x P(Transition out) =  0.4 x 0.6 x 0.4 = 0.096 and indeed true, our simulation result is 0.9632! Three consecutive faces must be 0.4 x 0.6 x 0.6 x 0.4 = 0.0576 very close tou our findings of 0.597. Thank you detective! you are the best! 
  
-Our detective was going to give a bit more information but gentleman was in hurry, he just said one last sentence before gentleman leaves the office:
+Our detective was going to give a bit more information but thrilled looking no name gentleman was in hurry, as he was running to quit. Detective just said one last sentence before he leaves the office:
 
-\- Next time if you have any suspicion that an event depens on its immediat previous state then check out Markov Chains 
+\- Next time if you have any suspicion that an event depends on its immediate previous state then check out Markov Chains first. and ... yes you are welcome...
+
+
 
 
 
