@@ -16,7 +16,7 @@ type: post
 ---
 
 
-Unlike any other detectives, he was not not very much into chasing leads out in the wild. He never enjoyed running after serial killers, or going into adventures like Indiana Jones. He was way way too lazy to become a real detective. But let's make no mistake, like any other detective he loves solving mysteries. Only problem is that he always hated rain snow or cold, and preferred being a lazy cat to the Indiana Jones. 
+Unlike any other detectives, he was not not very much into chasing leads out in the wild. He never enjoyed running after serial killers, or going into adventures like Indiana Jones. He was way way too lazy to become a real detective. But let's make no mistake, like any other detective he loves solving mysteries. Only problem is that he never liked rain snow or cold, and preferred being a lazy cat be an Indiana Jones. There were two things he hated in the life, getting soaked in rain, and bagged tea. 
 
 He was the Sherlock Holmes of pen, paper and few lines of computer code. Since he's an unusal detective, his clients were too unusal. They vary from those who lost a lot of money in gambling and want to prove casinos are cheating, to high profile scientists tring to decide when to launch a spacecraft, or football coaches looking for a new defensive midfielder but not trusting his own scouts. 
 
@@ -29,13 +29,13 @@ After finishing his modest breakfast, he briefly checked papers. They were all t
 
 He couldn't finish reading the rest of the newspaper as the rain sound hitting on roof and warm office seat made him sleepy, and didn't take a min to completelt switch to the other side.  
 
-After a while, his door was knocked and a frustrated looking man came in, detective woke up briefly, hoping this frustrated man would go away as he hoped this was only a dream and not a client. He always prefers dreams to frustrated looking clients, as with the former one you can deal with the way you want in your mind, latter one takes a bit more effort especially when they are frustrated and wet. 
+After a while, his door was knocked and a frustrated looking man in wet clothes came in, detective woke up briefly, expecting this frustrated man would go away as he was still hoping this was only a dream and not an actual client. He always prefers dreams to frustrated looking clients, as with the former one you can deal with the way you want in your mind, latter one takes a bit more effort especially when they are frustrated and wet. 
 
-After a long silence, detective agreed that the image is real as it gets more wet, frustrated and red, all his hopes to make it disapper didn't work well. He cleaned the last bit of sesame seeds in his teeth. He enjoys bagel but sesam was always the issue, causing many failed dates:
+After a long silence, detective finally accepted his denial and ever increasing silence wouldn't help to make him go away, as the frustrated looking gentleman was getting wetter, more frustrated. As silence grew, silence become like a third man sitting next to them and only listening  but not talking. He doesn't feel comfortable. There are two things her hates in the life, people doesn't uncomfortably participate conversations and bagged tea. He cleaned the last bit of sesame seeds in his teeth. He made checking his teeth made a habit, as sesam was always the issue after bagel, causing many failed dates:
 
 \- yes?...Mr..?
 
-\- Is this the bayesian detective bureau? asked frustated looking man.  
+\- Is this the bayesian detective bureau? asked wet frustated looking man.  
 
 \- ...
 
@@ -249,7 +249,7 @@ Detective nodded his head:
 \- Exactly! This is interesting since the coin is both fair and unfair at the same time. It is a ***HeisenCoin***. I coined this term! Anyways, shall we look at the casino dataset? 
 
 
-Satisfied looking no name gentleman was not very happy with this silly joke but didn't want to say it outloud. Simply smiled and agreed to look at casino data. Detective loaded the casino dataset for analysis:
+Satisfied looking no name dry gentleman was not very happy with this silly joke but didn't want to say it outloud. Simply smiled and agreed to look at casino data. There are two things detective hated in the life, clients doesn't laugh to his brilliant jokes and bagged tea. But he kept his calm and loaded the casino dataset for analysis:
 
 ```{python}
 dataset[:20]
